@@ -1,0 +1,71 @@
+/* Estilos gerais do corpo da página */
+body {
+  margin: 0; /* Remove a margem padrão */
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Define a fonte no estilo iOS */
+  
+  /* Plano de fundo degradê padrão (fallback) */
+  background: linear-gradient(#7d7d7d, #4a4a4a);
+
+  /* Imagem de fundo estilo iOS 4 (com gotas) */
+  background-image: url('img/background.png');
+  background-size: cover; /* Faz a imagem cobrir toda a tela */
+  color: white; /* Cor padrão do texto */
+}
+
+/* Estilo da div principal que envolve todo o conteúdo */
+.container {
+  text-align: center; /* Centraliza o texto */
+  padding: 40px; /* Espaçamento interno */
+}
+
+/* Título principal */
+h1 {
+  font-size: 2.5rem; /* Tamanho da fonte */
+  font-weight: bold; /* Fonte em negrito */
+  margin-bottom: 50px; /* Espaço abaixo do título */
+  text-shadow: 2px 2px 4px black; /* Sombra no texto para destacar no fundo */
+}
+
+/* Grade responsiva para organizar os sensores */
+.grid {
+  display: grid; /* Ativa o grid layout */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas adaptáveis conforme a largura */
+  gap: 50px; /* Espaço entre os itens */
+  max-width: 1500px; /* Largura máxima do grid */
+  margin: 0 auto; /* Centraliza o grid na tela */
+}
+
+/* Estilo de cada bloco de sensor */
+.icon {
+  background: rgba(0, 0, 0, 0.4); /* Fundo semi-transparente escuro */
+  border-radius: 20px; /* Bordas arredondadas */
+  padding: 70px; /* Espaçamento interno */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Sombra ao redor */
+  transition: transform 0.2s ease; /* Animação suave ao passar o mouse */
+}
+
+/* Efeito ao passar o mouse sobre o bloco */
+.icon:hover {
+  transform: scale(1.05); /* Aumenta levemente o tamanho */
+}
+
+/* Estilo das imagens dos sensores */
+.icon img {
+  width: 150px; /* Largura fixa */
+  height: 150px; /* Altura fixa */
+  margin-bottom: 10px; /* Espaço abaixo da imagem */
+  border-radius: 15px; /* Bordas arredondadas */
+  
+  /* Efeito brilhante estilo iOS nos ícones */
+  background: linear-gradient(to bottom, #ffffff88, #00000044);
+  box-shadow: inset 0 0 5px rgba(255,255,255,0.6); /* Sombra interna reflexiva */
+}
+
+/* Texto do nome de cada sensor */
+.icon p {
+  font-size: 0.9rem; /* Tamanho da fonte */
+  font-weight: bold; /* Negrito */
+  margin: 0; /* Remove margens padrão */
+  color: white; /* Cor branca */
+  text-shadow: 1px 1px 2px black; /* Sombra para melhor leitura */
+}
