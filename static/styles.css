@@ -15,7 +15,7 @@ body {
 /* Estilo da div principal que envolve todo o conteúdo */
 .container {
   text-align: center; /* Centraliza o texto */
-  padding: 40px; /* Espaçamento interno */
+  padding: 35px; /* Espaçamento interno */
 }
 
 /* Título principal */
@@ -29,9 +29,9 @@ h1 {
 /* Grade responsiva para organizar os sensores */
 .grid {
   display: grid; /* Ativa o grid layout */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Colunas adaptáveis conforme a largura */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Colunas adaptáveis conforme a largura */
   gap: 50px; /* Espaço entre os itens */
-  max-width: 1500px; /* Largura máxima do grid */
+  max-width: 1000px; /* Largura máxima do grid */
   margin: 0 auto; /* Centraliza o grid na tela */
 }
 

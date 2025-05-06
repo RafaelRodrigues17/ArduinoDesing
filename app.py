@@ -1,4 +1,7 @@
 from flask import Flask, render_template
+import database
+
+database.conectar()
 
 app = Flask(__name__)
 app.secret_key = "chave_muito_segura"
