@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, flash
 import database
 
 database.conectar()
@@ -13,6 +13,19 @@ def index():
 @app.route('/home')
 def home():
     return render_template('home.html')
+
+@app.route('/led')
+def led(ip):
+    if database.acender(ip) == True:
+        return render_template('led.html')
+    
+    else:
+        flash("ip nao encontrado")
+        return render_template('led.html')
+    
+
+
+
 
 if __name__ == '__main__':
    app.run(debug=True)
