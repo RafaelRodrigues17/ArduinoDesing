@@ -1,7 +1,4 @@
 from flask import Flask, render_template
-import database
-
-database.conectar()
 
 app = Flask(__name__)
 app.secret_key = "chave_muito_segura"
@@ -13,6 +10,10 @@ def index():
 @app.route('/home')
 def home():
     return render_template('home.html')
+
+@app.route('/led')
+def led():
+    return render_template('led.html')
 
 if __name__ == '__main__':
    app.run(debug=True)

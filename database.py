@@ -1,15 +1,16 @@
 import mysql.connector
 
-from flask import session
+class Arduino:
 
-def conectar():
-        return mysql.connector.connect(
+    def __init__(self):
+        self.__conexao = mysql.connector.connect(
             host = 'paparella.com.br',
             user = 'paparell_aluno_4',
             password = '@Senai2025',
             database = 'paparell_python'
         )
-# Função para criar as tabelas do banco de dados, caso não existam
-if __name__ == '__main__':
-   conectar()
+        self.__cursor = self.__conexao.cursor()
+
+    def criar_tabela(self):
+        query = ("create table if not exists (id integer primary key, nome varchar(255)) ")
     

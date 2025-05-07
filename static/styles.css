@@ -69,3 +69,32 @@ h1 {
   color: white; /* Cor branca */
   text-shadow: 1px 1px 2px black; /* Sombra para melhor leitura */
 }
+/* Botão azul para ligar o LED */
+button.ligar {
+  background-color: #007bff; /* Azul */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+button.ligar:hover {
+  background-color: #0056b3; /* Azul mais escuro no hover */
+}
+
+/* Botão vermelho para desligar o LED */
+button.desligar {
+  background-color: #dc3545; /* Vermelho */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+button.desligar:hover {
+  background-color: #a71d2a; /* Vermelho mais escuro no hover */
+}

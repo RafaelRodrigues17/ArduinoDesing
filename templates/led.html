@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle do LED</title>
+  <link rel="stylesheet" href="static/styles.css">
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    #mensagem {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Controle do LED</h1>
+
+    <label for="ip">Digite o IP do usuário:</label>
+    <input type="text" id="ip" placeholder="Ex: 192.168.0.10">
+
+    <button class="ligar" onclick="ligarLed()">Ligar LED</button>
+    <button class="desligar" onclick="desligarLed()">Desligar LED</button>    
+
+    <p id="mensagem"></p>
+  </div>
+
+  <script>
+    function ligarLed() {
+      const ip = document.getElementById('ip').value;
+      if (!ip) {
+        alert("Por favor, digite o IP.");
+        return;
+      }
+      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
+      document.getElementById('mensagem').textContent = "O LED está ligado!";
+    }
+
+    function desligarLed() {
+      const ip = document.getElementById('ip').value;
+      if (!ip) {
+        alert("Por favor digite um IP válido.");
+        return;
+      }
+      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
+      document.getElementById('mensagem').textContent = "O LED está desligado!";
+    }
+  </script>
+</body>
+</html>
