@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle do Ultrassônico</title>
+  <link rel="stylesheet" href="static/styles.css">
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .img-led {
+        width: 200px;
+        height: auto;
+        margin: 20px auto;
+        display: block;
+    }
+    #mensagem {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Controle do Ultrassônico</h1>
+    <img src="static/img/ultrassonico.png" class="img-led">
+    <form action="/lcd" method="POST">
+
+      <label for="ip">Distância em centímetros</label>
+      <p class="distancia">95 cm</p>
+      <input type="hidden" id="estado_lcd" name="estado_lcd" value="1">
+
+      <button type="submit" class="ligar" onclick="document.getElementById('estado_lcd').value = 1;">Voltar</button>
+    </form>
+         
+
+    <p id="mensagem"></p>
+  </div>
+
+  <script>
+    function ligarLcd() {
+      const ip = document.getElementById('ip').value;
+      if (!ip) {
+        alert("Por favor, digite o IP.");
+        return;
+      }
+      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
+      document.getElementById('mensagem').textContent = "O LCD está ligado!";
+    }
+
+    function desligarLcd() {
+      const ip = document.getElementById('ip').value;
+      if (!ip) {
+        alert("Por favor digite um IP válido.");
+        return;
+      }
+      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
+      document.getElementById('mensagem').textContent = "O LCD está desligado!";
+    }
+  </script>
+</body>
+</html>

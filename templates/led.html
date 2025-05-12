@@ -17,44 +17,57 @@
       padding: 10px;
       margin: 10px 0;
     }
+    .img-led {
+      width: 200px;
+      height: auto;
+      margin: 20px auto;
+      display: block;
+    }
     #mensagem {
       font-weight: bold;
       margin-top: 20px;
+    }
+    .erro {
+      color: red;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Controle do LED</h1>
+    <img src="static/img/led.png" class="img-led">
+    <form id="form_led" action="/acender_led" method="POST">
+      <label for="ip">Digite o IP do usuário:</label>
+      <input type="text" id="ip" name="ip" placeholder="Ex: 192.168.0.10" required>
 
-    <label for="ip">Digite o IP do usuário:</label>
-    <input type="text" id="ip" placeholder="Ex: 192.168.0.10">
+      <input type="hidden" id="estado_led" name="estado_led" value="1">
 
-    <button class="ligar" onclick="ligarLed()">Ligar LED</button>
-    <button class="desligar" onclick="desligarLed()">Desligar LED</button>    
+      <button type="submit" class="ligar" onclick="validarIP('ligar')">Ligar LED</button>
+      <button type="submit" class="desligar" onclick="validarIP('desligar')">Desligar LED</button> 
+    </form>
 
     <p id="mensagem"></p>
+    <p id="erro" class="erro"></p> <!-- Mensagem de erro aqui -->
   </div>
 
   <script>
-    function ligarLed() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LED está ligado!";
-    }
+    // Lista de IPs válidos
+    const IP_HOSTS = ["192.168.1.177", "192.168.1.178", "192.168.1.105"];
 
-    function desligarLed() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
+    // Função que valida o IP antes de enviar o formulário
+    function validarIP(acao) {
+      const ip = document.getElementById('ip').value; // Obtém o IP digitado pelo usuário
+      const erroElement = document.getElementById('erro'); // Elemento onde exibimos a mensagem de erro
+
+      // Verifica se o IP fornecido está na lista de IPs válidos
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false; // Impede o envio do formulário
+      } else {
+        erroElement.textContent = ""; // Limpa a mensagem de erro se o IP for válido
+        document.getElementById('estado_led').value = (acao === 'ligar') ? 1 : 0; // Define o estado do LED (ligar ou desligar)
+        return true; // Permite o envio do formulário 
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LED está desligado!";
     }
   </script>
 </body>

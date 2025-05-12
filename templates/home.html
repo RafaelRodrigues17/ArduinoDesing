@@ -5,38 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Home - Sensores Arduino</title>
   <link rel="stylesheet" href="static/styles.css">
+  <style>
+    .header {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #2e2b2b;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .header input[type="text"] {
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 5px;
+    }
+    .header button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .header button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+  <script>
+    function alterarIP() {
+      const ipDisplay = document.getElementById("ipDisplay");
+      const ipInput = document.getElementById("ipInput");
+      const ipButton = document.getElementById("ipButton");
+      if (ipInput.style.display === "none") {
+        ipInput.style.display = "inline-block";
+        ipButton.textContent = "Salvar";
+      } else {
+        ipDisplay.textContent = ipInput.value || "156.256.256.22";
+        ipInput.style.display = "none";
+        ipButton.textContent = "Alterar";
+      }
+    }
+  </script>
 </head>
 <body>
+  <div class="header">
+    <span>Olá Usuário, este é seu IP: </span>
+    <span id="ipDisplay">156.256.256.22</span>
+    <input type="text" id="ipInput" style="display: none;" placeholder="Digite o novo IP" />
+    <button id="ipButton" onclick="alterarIP()">Alterar</button>
+  </div>
+
   <div class="container">
     <h1>SENSORES</h1>
     <div class="grid">
       <div class="icon">
-        <a href="\led">
-          <div class="icon">
-            <img src="static/img/led.png" alt="Acender Led">
-            <p>Acender Led</p>
-          </div>
+        <a href="/led">
+          <img src="static/img/led.png" alt="Acender Led">
+          <p>Acender Led</p>
         </a>
       </div>
       <div class="icon">
-        <img src="static/img/lcd.png" alt="LCD">
-        <p>LCD</p>
+        <a href="/lcd">
+          <img src="static/img/lcd.png" alt="LCD">
+          <p>LCD</p>
+        </a>
       </div>
       <div class="icon">
-        <img src="static/img/ultrassonico.png" alt="Sensor Ultrassonico">
-        <p>Sensor Ultrassônico</p>
+        <a href="/ultrassonico">
+          <img src="static/img/ultrassonico.png" alt="Sensor Ultrassonico">
+          <p>Sensor Ultrassônico</p>
+        </a>
       </div>
       <div class="icon">
-        <img src="static/img/fotoresistor.png" alt="Fotoresistor">
-        <p>Fotoresistor</p>
+        <a href="/fotoresistor">
+          <img src="static/img/fotoresistor.png" alt="Fotoresistor">
+          <p>Fotoresistor</p>
+        </a>
       </div>
       <div class="icon">
-        <img src="static/img/buzzer.png" alt="Buzzer">
-        <p>Buzzer</p>
+        <a href="/buzzer">
+          <img src="static/img/buzzer.png" alt="Buzzer">
+          <p>Buzzer</p>
+        </a>
       </div>
       <div class="icon">
-        <img src="static/img/pir.png" alt="Sensor PIR">
-        <p>Sensor PIR</p>
+        <a href="/pir">
+          <img src="static/img/pir.png" alt="Sensor PIR">
+          <p>Sensor PIR</p>
+        </a>
+      </div>
     </div>
   </div>
 </body>
