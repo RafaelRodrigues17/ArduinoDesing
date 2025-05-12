@@ -12,7 +12,7 @@ body {
   color: white; /* Cor padrão do texto */
 }
 
-/* Estilo da div principal que envolve todo o conteúdo */
+/* Estilo da div principal que envolve todo os conteúdos */
 .container {
   text-align: center; /* Centraliza o texto */
   padding: 35px; /* Espaçamento interno */
@@ -116,7 +116,7 @@ body.login, body.cadastro {
 #logo {
   position: absolute;
   top: 14px;
-  width: 180px;
+  width: 450px;
 }
 
 /* Caixa de login e cadastro */
@@ -209,7 +209,7 @@ body#index {
 #index #logo {
   position: absolute;
   top: 40px;
-  width: 320px;
+  width: 450px;
 }
 
 /* Conteúdo central */

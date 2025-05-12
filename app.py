@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, url_for, redirect, flash, session
-import database
+from flask import Flask, render_template, flash, session, request, redirect, url_for
+from database import Banco
+
+banco = Banco()
 
 app = Flask(__name__)
 app.secret_key = "chave_muito_segura"
@@ -12,32 +14,73 @@ def index():
 def home():
     return render_template('home.html')
 
+@app.route('/cadastro')
+def cadastro():
+    return render_template('cadastro.html')
+
 @app.route('/led')
 def led():
     return render_template('led.html')
 
-@app.route('/login', methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        form = request.form
-        if database.login(form) == True:
-            session['usuario'] = form['email'] 
-            return redirect(url_for('home'))
-        else:
-            return "Ocorreu um erro ao fazer o login do usuário"  
-    else:
-        return render_template('login.html')  
+@app.route('/lcd')
+def lcd():
+    return render_template('lcd.html')
 
-@app.route('/cadastro', methods=["GET", "POST"])
-def cadastro():
+@app.route('/ultrassonico')
+def ultrassonico():
+    return render_template('ultrassonico.html')
+
+@app.route('/acender_led', methods=['POST'])
+def acender_led():
+    ip = request.form.get('ip')
+
     if request.method == "POST":
-        form = request.form 
-        if database.criar_usuario(form) == True:
-            return render_template('login.html') 
+        if banco.acender(ip) == True:
+            return redirect(url_for('led'))
+        
         else:
-            return "Ocorreu um erro ao cadastrar usuário" 
+            flash("ip nao encontrado")
+            return redirect(url_for('led'))
+        
+@app.route('/cadastrar',methods = ["POST"])
+def cadastrar():
+    banco = Banco()
+    form = request.form
+    
+    if banco.cadastro(form) == True:
+        return render_template('index.html')
     else:
-        return render_template('cadastro.html')
+        return ("erro1")
+
+
+@app.route('/login',methods = ['GET','POST'])   
+def login():
+    form =  request.form
+
+    if request.method == 'POST':
+        email = form['email']
+        senha = form['senha']
+
+        if Banco.login(form) == True:
+            return redirect(url_for('home'))
+
+        else:
+            flash("senha ou email incorreto")
+        
+    return render_template('index.html')
+
+# @app.route('acender_lcd',methods = ['GET','POST'])
+# def acender_lcd():
+#     ip = request.form.get('ip')
+    
+#     if request.method == "POST":
+#         if banco.acender_lcd(ip) == True:
+#             return redirect(url_for('led'))
+        
+#         else:
+#             flash("ip nao encontrado")
+#             return redirect(url_for('led'))
+
 
 if __name__ == '__main__':
    app.run(debug=True)

@@ -16,17 +16,17 @@
     <div class="caixa-de-login">
         <h2>Crie sua conta</h2>
         <!-- ADICIONAR O FORM AO INICIO -->
-        <form action="/cadastro" method="POST" onsubmit="return verificarSenhas()">
-            <p>Usuário:</p>
-            <input type='text' name='usuario' placeholder="Digite seu usuário">
+        <form action="/cadastrar" method="POST" onsubmit="return verificarSenhas()">
+            <p>nome:</p>
+            <input type='text' name='nome' placeholder="informe seu nome">
             <p>E-mail:</p>
-            <input type='text' name='email' placeholder="Digite seu e-mail">
+            <input type='text' name='email' placeholder="informe seu e-mail">
             <p>IP:</p>
-            <input type='text' name='ip' placeholder="Digite seu IP">
+            <input type='text' name='ip' placeholder="informe seu IP">
             <p>Senha:</p>
             <input type='password' name='senha' placeholder="Digite sua senha">
             <p>Confirme sua senha:</p>
-            <input type='password' name='confirmar_senha' placeholder="Digite sua senha">
+            <input type='password' name='confirmar_senha' placeholder="Digite sua senha novamente">
             <br>
             <br>
             <div class="botoes">
