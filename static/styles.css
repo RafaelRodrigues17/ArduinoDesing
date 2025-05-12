@@ -12,7 +12,7 @@ body {
   color: white; /* Cor padrão do texto */
 }
 
-/* Estilo da div principal que envolve todo o conteúdo */
+/* Estilo da div principal que envolve todo os conteúdos */
 .container {
   text-align: center; /* Centraliza o texto */
   padding: 35px; /* Espaçamento interno */
