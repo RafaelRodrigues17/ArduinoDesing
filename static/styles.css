@@ -39,7 +39,7 @@ h1 {
 .icon {
   background: rgba(0, 0, 0, 0.4); /* Fundo semi-transparente escuro */
   border-radius: 20px; /* Bordas arredondadas */
-  padding: 70px; /* Espaçamento interno */
+  padding: 39px; /* Espaçamento interno */
   box-shadow: 0 4px 10px rgba(0,0,0,0.5); /* Sombra ao redor */
   transition: transform 0.2s ease; /* Animação suave ao passar o mouse */
 }
