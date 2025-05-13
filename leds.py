@@ -3,7 +3,7 @@ import time
  
 def principal(ip_usuario, estado_led):
     
-    HOST = ["192.168.1.177", "192.168.1.178", "192.168.1.105"]
+    HOST = ["10.0.0.18", "10.0.0.178", "192.168.1.105"]
     PORT = 5000
     MAX_TENTATIVAS = 30
     TIMEOUT = 5
@@ -13,7 +13,6 @@ def principal(ip_usuario, estado_led):
         print("Dispositivo inválido! Programa encerrado.")
         return False  
 
-    
     if estado_led == 1:
         msg = b"ligar\n"
     else:
