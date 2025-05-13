@@ -16,6 +16,7 @@ body {
 .container {
   text-align: center; /* Centraliza o texto */
   padding: 35px; /* Espaçamento interno */
+  text-decoration: none;
 }
 
 /* Título principal */
@@ -33,6 +34,7 @@ h1 {
   gap: 50px; /* Espaço entre os itens */
   max-width: 1000px; /* Largura máxima do grid */
   margin: 0 auto; /* Centraliza o grid na tela */
+  text-decoration: none;
 }
 
 /* Estilo de cada bloco de sensor */
@@ -220,6 +222,7 @@ body#index {
   box-shadow: 0 0 15px #00ffff55;
   text-align: center;
   backdrop-filter: blur(6px);
+  text-decoration: none;
 }
 
 /* Título da página inicial */
@@ -258,4 +261,9 @@ body#index {
 
 .botoes .botao-secundario:hover {
   background: linear-gradient(90deg, #ff8844, #bb3300);
+}
+
+.atualizar {
+  text-decoration: none;
+  color: white;
 }
