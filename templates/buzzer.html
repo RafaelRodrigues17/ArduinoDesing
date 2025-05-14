@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle do LCD</title>
+  <title>Controle do Buzzer</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
     .container {
@@ -31,14 +31,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Controle do LCD</h1>
-    <img src="static/img/lcd.png" class="img-led">
-    <form action="/acender_lcd" method="POST">
-      <label for="ip">Digite o IP do usuário:</label>
-      <input type="text" id="ip" name="ip" placeholder="Ex: 192.168.0.10" required>
+    <h1>Controle do Buzzer</h1>
+    <img src="static/img/buzzer.png" class="img-led">
+    <form action="/acender_buzzer" method="POST">
 
-      <label for="mensagem">Mensagem do LCD:</label>
-      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do LCD" required>
+      <label for="mensagem">Notas para adicionar:</label>
+      <input type="text" id="mensagem" name="mensagem" placeholder="Dó, Ré, Mi, Fá..." required>
 
     <button type="submit" class="ligar">Confirmar</button>
     <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>

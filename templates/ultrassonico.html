@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle do Ultrassônico</title>
+  <title>Controle do Sensor Ultrassônico</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
     .container {
-      max-width: 400px;
+      max-width: 500px;
       margin: 0 auto;
       text-align: center;
       padding: 20px;
@@ -26,6 +26,33 @@
     #mensagem {
       font-weight: bold;
       margin-top: 20px;
+    }
+    .tabela-container {
+        background-color: #1eff0046;
+        padding: 20px;
+        border-radius: 20px;
+        margin-top: 30px;
+        text-align: left;
+    }
+    .tabela-titulo {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #ddd;
+        font-weight: bold;
     }
   </style>
 </head>
@@ -47,11 +74,12 @@
     <button type="submit" class="voltar" href ="/home">Voltar</button>
     
     
+
     <p id="mensagem"></p>
     <p id="erro" class="erro"></p>
   </div>
-  
   <script>
+
     const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
 
     function validarIP(acao) {
@@ -68,7 +96,9 @@
       }
       
       document.getElementById('mensagem').textContent = "O LCD está ligado!";
+
     }
   </script>
 </body>
 </html>
+  
