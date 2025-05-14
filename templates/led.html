@@ -46,9 +46,24 @@
   </div>
 
   <script>
-    function definirEstado(acao) {
-      document.getElementById('estado_led').value = (acao === 'ligar') ? 1 : 0;
-      return true;
+
+    // Lista de IPs válidos
+    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
+
+    // Função que valida o IP antes de enviar o formulário
+    function validarIP(acao) {
+      const ip = document.getElementById('ip').value; // Obtém o IP digitado pelo usuário
+      const erroElement = document.getElementById('erro'); // Elemento onde exibimos a mensagem de erro
+
+      // Verifica se o IP fornecido está na lista de IPs válidos
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false; // Impede o envio do formulário0
+      } else {
+        erroElement.textContent = ""; // Limpa a mensagem de erro se o IP for válido
+        document.getElementById('estado_led').value = (acao === 'ligar') ? 1 : 0; // Define o estado do LED (ligar ou desligar)
+        return true; // Permite o envio do formulário 
+      }
     }
   </script>
 </body>

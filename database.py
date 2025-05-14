@@ -5,10 +5,12 @@ from leds import principal
 class Banco:
     def __init__(self):
         self.__conexao = mysql.connector.connect(
-            host = 'paparella.com.br',
-            user = 'paparell_aluno_5',
-            password = '@Senai2025',
-            database = 'paparell_python'
+
+            host = "paparella.com.br",
+            user = "paparell_aluno_8",
+            password = "@Senai2025",
+            database = "paparell_python"
+
         )
         self.__cursor = self.__conexao.cursor()
         self.criar_tabela()
@@ -47,12 +49,30 @@ class Banco:
             self.__conexao.commit()
             
             # Enviar comando para o dispositivo
-            if principal(ip_usuario[0], estado_led):
+            if principal(ip_usuario[0], estado_led, circuito = 1):
                 return True
             else:
                 return False
         else:
             return False
+        
+    def atualizar (self, ip):
+        
+        self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            estado_ultrasssonico = 1
+            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrasssonico, ip,))
+            self.__conexao.commit()
+            
+            if principal (ip_usuario [0], estado_ultrasssonico, circuitos = 2):
+                return True
+            else:
+                return False
+        else:
+            return False
+        
         
     def fechar(self):
         self.__cursor.close()

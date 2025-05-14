@@ -34,12 +34,30 @@ def fotoresistor():
 def buzzer():
     return render_template('buzzer.html')
 
+@app.route('/acender_led', methods=['POST'])
+def acender_led():
+    ip = request.form.get('ip')
+    estado_led = int(request.form.get('estado_led'))
+
 
 @app.route('/pir')
 def pir():
     return render_template('pir.html')
 
 
+        
+@app.route ('/ativar_ultrassonico', methods = ['POST'])
+def ativar_ultrassonico ():
+    ip = request.form.get ('ip')
+    estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
+
+    if request.method == "POST":
+        if banco.atualizar(ip) == True:
+            return redirect(url_for('ultrassonico'))
+        
+        else:
+            flash("ip nao encontrado")
+            return redirect(url_for('ultrassonico'))
         
 @app.route('/cadastrar',methods = ["POST"])
 def cadastrar():
@@ -58,6 +76,7 @@ def login():
         email = form['email']
 
         if banco.login(form) == True:
+
             session['ip']= "144555115" #ip deve vir do banco de dados
 
             return redirect(url_for('home'))

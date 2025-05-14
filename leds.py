@@ -1,13 +1,16 @@
 import socket
 import time
 
-def principal(ip_usuario, estado_led):
+
+def principal(ip_usuario, estado_led, circuitos):
+
     PORT = 5000
     MAX_TENTATIVAS = 30
     TIMEOUT = 5
 
-   
-    msg = b"ligar\n" if estado_led == 1 else b"desligar\n"  
+
+    if circuitos == 1:
+        msg = b"ligar\n" if estado_led == 1 else b"desligar\n"  
 
     s = None 
     for tentativa in range(1, MAX_TENTATIVAS + 1):
