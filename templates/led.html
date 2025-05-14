@@ -36,14 +36,14 @@
   <div class="container">
     <h1>Controle do LED</h1>
     <img src="static/img/led.png" class="img-led">
-    <form id="form_led" action="/acender_led" method="POST">
+    <form id="form_led" action="/acender_led" method="POST" onsubmit="return validarIP()">
       <label for="ip">Digite o IP do usuário:</label>
       <input type="text" id="ip" name="ip" placeholder="Ex: 192.168.0.10" required>
 
       <input type="hidden" id="estado_led" name="estado_led" value="1">
 
-      <button type="submit" class="ligar" onclick="validarIP('ligar')">Ligar LED</button>
-      <button type="submit" class="desligar" onclick="validarIP('desligar')">Desligar LED</button> 
+      <button type="submit" class="ligar" onclick="setEstado(1)">Ligar LED</button> <!-- ← MODIFICADO -->
+      <button type="submit" class="desligar" onclick="setEstado(0)">Desligar LED</button> <!-- ← MODIFICADO -->
     </form>
 
     <p id="mensagem"></p>
@@ -53,20 +53,23 @@
   <script>
     // Lista de IPs válidos
     const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
+    let estadoLED = 1;  
+
+    function setEstado(estado) {
+      estadoLED = estado;  // ← MODIFICADO
+    }
 
     // Função que valida o IP antes de enviar o formulário
-    function validarIP(acao) {
-      const ip = document.getElementById('ip').value; // Obtém o IP digitado pelo usuário
-      const erroElement = document.getElementById('erro'); // Elemento onde exibimos a mensagem de erro
-
-      // Verifica se o IP fornecido está na lista de IPs válidos
+    function validarIP() {
+      const ip = document.getElementById('ip').value;
+      const erroElement = document.getElementById('erro');
       if (!IP_HOSTS.includes(ip)) {
         erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
-        return false; // Impede o envio do formulário
+        return false;
       } else {
-        erroElement.textContent = ""; // Limpa a mensagem de erro se o IP for válido
-        document.getElementById('estado_led').value = (acao === 'ligar') ? 1 : 0; // Define o estado do LED (ligar ou desligar)
-        return true; // Permite o envio do formulário 
+        erroElement.textContent = "";
+        document.getElementById('estado_led').value = estadoLED;  // ← MODIFICADO
+        return true;
       }
     }
   </script>

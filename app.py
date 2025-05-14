@@ -33,6 +33,7 @@ def ultrassonico():
 @app.route('/acender_led', methods=['POST'])
 def acender_led():
     ip = request.form.get('ip')
+    estado_led = int(request.form.get('estado_led'))
 
     if request.method == "POST":
         if banco.acender(ip) == True:
@@ -61,7 +62,7 @@ def login():
         email = form['email']
         senha = form['senha']
 
-        if Banco.login(form) == True:
+        if banco.login(form) == True:
             return redirect(url_for('home'))
 
         else:
