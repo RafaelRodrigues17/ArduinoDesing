@@ -57,12 +57,12 @@ def ativar_ultrassonico ():
     estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
 
     if request.method == "POST":
-        if banco.acender(ip) == True:
+        if banco.atualizar(ip) == True:
             return redirect(url_for('ultrassonico'))
         
         else:
             flash("ip nao encontrado")
-            return redirect(url_for('leultrassonicod'))
+            return redirect(url_for('ultrassonico'))
         
 @app.route('/cadastrar',methods = ["POST"])
 def cadastrar():

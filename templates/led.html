@@ -62,7 +62,7 @@
       // Verifica se o IP fornecido está na lista de IPs válidos
       if (!IP_HOSTS.includes(ip)) {
         erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
-        return false; // Impede o envio do formulário
+        return false; // Impede o envio do formulário0
       } else {
         erroElement.textContent = ""; // Limpa a mensagem de erro se o IP for válido
         document.getElementById('estado_led').value = (acao === 'ligar') ? 1 : 0; // Define o estado do LED (ligar ou desligar)

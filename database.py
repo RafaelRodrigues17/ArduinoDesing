@@ -59,11 +59,17 @@ class Banco:
         self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone ()
         
-        if principal (ip_usuario, estado_ultrasssonico, circuitos = 2):
+        if ip_usuario:
             estado_ultrasssonico = 1
             self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrasssonico, ip,))
             self.__conexao.commit()
             
+            if principal (ip_usuario [0], estado_ultrasssonico, circuitos = 2):
+                return True
+            else:
+                return False
+        else:
+            return False
         
         
     def fechar(self):
