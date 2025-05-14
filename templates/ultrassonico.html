@@ -33,42 +33,41 @@
   <div class="container">
     <h1>Controle do Ultrassônico</h1>
     <img src="static/img/ultrassonico.png" class="img-led">
-    <form action="/lcd" method="POST">
+    <form action="/acender_ultrassonico" method="POST">
       
       <label for="ip">Distância em centímetros</label>
       <p class="distancia">95 cm</p>
-      <input type="hidden" id="estado_lcd" name="estado_lcd" value="1">
+      <input type="hidden" id="estado_ultrassonico" name="estado_ultrassonico" value="1">
 
-      <a class="atualizar" href="/ultrassonico">
+      <button class="atualizar" type="submit" onclick="validarIP('atualizar')" href="/ultrassonico">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-      </a>
+      </button>
       
-      <button type="submit" class="ligar" onclick="document.getElementById('estado_lcd').value = 1;">Voltar</button>
     </form>
+    <button type="submit" class="voltar" href ="/home">Voltar</button>
     
     
     <p id="mensagem"></p>
+    <p id="erro" class="erro"></p>
   </div>
   
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
-    }
+    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
 
-    function desligarLcd() {
+    function validarIP(acao) {
       const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
+      const erroElement = document.getElementById('erro');
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false;
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
+      else {
+        erroElement.textContent = "";
+        document.getElementById('valor_ultrassonico').value = (acao === 'ligar');
+        return true;
+      }
+      
+      document.getElementById('mensagem').textContent = "O LCD está ligado!";
     }
   </script>
 </body>

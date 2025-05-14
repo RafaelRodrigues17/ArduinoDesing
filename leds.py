@@ -1,34 +1,22 @@
 import socket
 import time
- 
-def principal(ip_usuario, estado_led):
-    
-    HOST = ["10.0.0.18", "10.0.0.178", "192.168.1.105"]
+
+def principal(ip_usuario, estado_led, circuitos):
     PORT = 5000
     MAX_TENTATIVAS = 30
     TIMEOUT = 5
 
-    
-    if ip_usuario not in HOST:
-        print("Dispositivo inválido! Programa encerrado.")
-        return False  
+    if circuitos == 1:
+        msg = b"ligar\n" if estado_led == 1 else b"desligar\n"  
 
-    if estado_led == 1:
-        msg = b"ligar\n"
-    else:
-        msg = b"desligar\n"
-        
-   
-    ip = HOST.index(ip_usuario)
-
-    
+    s = None 
     for tentativa in range(1, MAX_TENTATIVAS + 1):
         try:
-            print(f"Tentando abrir conexão com IP: {HOST[ip]}")
-            s = socket.create_connection((HOST[ip], PORT), timeout=2)
+            print(f"Tentando abrir conexão com IP: {ip_usuario}")  
+            s = socket.create_connection((ip_usuario, PORT), timeout=2)
             print("Conexão aberta")
             s.settimeout(TIMEOUT)
-            s.sendall(msg)  
+            s.sendall(msg)
             print(f"Comando executado: {s.recv(16).decode()}")
             break
         except socket.timeout:
