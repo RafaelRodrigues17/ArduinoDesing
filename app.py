@@ -51,6 +51,19 @@ def acender_led():
             flash("ip nao encontrado")
             return redirect(url_for('led'))
         
+@app.route ('/ativar_ultrassonico', methods = ['POST'])
+def ativar_ultrassonico ():
+    ip = request.form.get ('ip')
+    estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
+
+    if request.method == "POST":
+        if banco.acender(ip) == True:
+            return redirect(url_for('ultrassonico'))
+        
+        else:
+            flash("ip nao encontrado")
+            return redirect(url_for('leultrassonicod'))
+        
 @app.route('/cadastrar',methods = ["POST"])
 def cadastrar():
     banco = Banco()
