@@ -30,6 +30,14 @@ def lcd():
 def ultrassonico():
     return render_template('ultrassonico.html')
 
+@app.route('/fotoresistor')
+def fotoresistor():
+    return render_template('fotoresistor.html')
+
+@app.route('/buzzer')
+def buzzer():
+    return render_template('buzzer.html')
+
 @app.route('/acender_led', methods=['POST'])
 def acender_led():
     ip = request.form.get('ip')
