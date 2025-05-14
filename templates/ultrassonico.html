@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle do Ultrassônico</title>
+  <title>Controle do Sensor Ultrassônico</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
     .container {
-      max-width: 400px;
+      max-width: 500px;
       margin: 0 auto;
       text-align: center;
       padding: 20px;
@@ -27,6 +27,33 @@
       font-weight: bold;
       margin-top: 20px;
     }
+    .tabela-container {
+        background-color: #1eff0046;
+        padding: 20px;
+        border-radius: 20px;
+        margin-top: 30px;
+        text-align: left;
+    }
+    .tabela-titulo {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #ddd;
+        font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -34,42 +61,33 @@
     <h1>Controle do Ultrassônico</h1>
     <img src="static/img/ultrassonico.png" class="img-led">
     <form action="/lcd" method="POST">
-      
-      <label for="ip">Distância em centímetros</label>
-      <p class="distancia">95 cm</p>
+      <button type="button" class="ligar" onclick="medirAgora()">Medir Agora</button>
       <input type="hidden" id="estado_lcd" name="estado_lcd" value="1">
-
-      <a class="atualizar" href="/ultrassonico">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
-      </a>
-      
-      <button type="submit" class="ligar" onclick="document.getElementById('estado_lcd').value = 1;">Voltar</button>
     </form>
-    
-    
+    <div class="tabela-container">
+      <div class="tabela-titulo">Últimas Medidas</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Distância</th>
+            <th>Nome</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-medidas">
+          <tr><td colspan="3">Carregando dados...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
     <p id="mensagem"></p>
   </div>
-  
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
-    }
-
-    function desligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
+    function medirAgora() {
+      // Aqui você pode adicionar a lógica para fazer a medição e atualizar a tabela.
+      alert("Medição realizada!");
     }
   </script>
 </body>
 </html>
+  

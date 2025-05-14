@@ -6,7 +6,7 @@ class Banco:
     def __init__(self):
         self.__conexao = mysql.connector.connect(
             host = 'paparella.com.br',
-            user = 'paparell_aluno_4',
+            user = 'paparell_aluno_5',
             password = '@Senai2025',
             database = 'paparell_python'
         )
