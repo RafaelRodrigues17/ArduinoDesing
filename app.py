@@ -18,10 +18,6 @@ def home():
 def cadastro():
     return render_template('cadastro.html')
 
-@app.route('/led')
-def led():
-    return render_template('led.html')
-
 @app.route('/lcd')
 def lcd():
     return render_template('lcd.html')
@@ -37,19 +33,6 @@ def fotoresistor():
 @app.route('/buzzer')
 def buzzer():
     return render_template('buzzer.html')
-
-@app.route('/acender_led', methods=['POST'])
-def acender_led():
-    ip = request.form.get('ip')
-    estado_led = int(request.form.get('estado_led'))
-
-    if request.method == "POST":
-        if banco.acender(ip) == True:
-            return redirect(url_for('led'))
-        
-        else:
-            flash("ip nao encontrado")
-            return redirect(url_for('led'))
         
 @app.route('/cadastrar',methods = ["POST"])
 def cadastrar():
@@ -61,35 +44,40 @@ def cadastrar():
     else:
         return ("erro1")
 
-
 @app.route('/login',methods = ['GET','POST'])   
 def login():
-    form =  request.form
-
     if request.method == 'POST':
+        form =  request.form
         email = form['email']
-        senha = form['senha']
 
         if banco.login(form) == True:
+            session['ip']= "144555115" #ip deve vir do banco de dados
+
             return redirect(url_for('home'))
 
         else:
             flash("senha ou email incorreto")
         
-    return render_template('index.html')
+    return render_template('login.html')
 
-# @app.route('acender_lcd',methods = ['GET','POST'])
-# def acender_lcd():
-#     ip = request.form.get('ip')
+@app.route("/led")
+def led():
+    mensagem = request.args.get("mensagem")
+    return render_template("led.html", mensagem=mensagem)
+
+@app.route("/acender_led", methods=["POST"])
+def acender_led():
+    estado_led = request.form.get("estado_led")
+    ip = session.get("ip")  # já armazenado no home.html
+    if not ip:
+        return "IP não definido", 400
     
-#     if request.method == "POST":
-#         if banco.acender_lcd(ip) == True:
-#             return redirect(url_for('led'))
-        
-#         else:
-#             flash("ip nao encontrado")
-#             return redirect(url_for('led'))
+
+    # Aqui você colocaria o código para enviar o comando ao LED, como via requests
+
+    mensagem = "LED ligado com sucesso!" if estado_led == "1" else "LED desligado com sucesso!"
+    return redirect(url_for("led", mensagem=mensagem))
 
 
 if __name__ == '__main__':
-   app.run(debug=True)
+        app.run(debug=True)
