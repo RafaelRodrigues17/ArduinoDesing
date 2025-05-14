@@ -49,8 +49,10 @@ def login():
     if request.method == 'POST':
         form =  request.form
         email = form['email']
+
         if banco.login(form) == True:
             session['ip']= "144555115" #ip deve vir do banco de dados
+
             return redirect(url_for('home'))
 
         else:
