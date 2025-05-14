@@ -38,6 +38,10 @@ def fotoresistor():
 def buzzer():
     return render_template('buzzer.html')
 
+@app.route('/pir')
+def pir():
+    return render_template('pir.html')
+
 @app.route('/acender_led', methods=['POST'])
 def acender_led():
     ip = request.form.get('ip')

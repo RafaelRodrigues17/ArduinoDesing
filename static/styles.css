@@ -267,3 +267,7 @@ body#index {
   text-decoration: none;
   color: white;
 }
+
+a.atualizar svg {
+  margin: 30px;
+}

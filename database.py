@@ -5,10 +5,10 @@ from leds import principal
 class Banco:
     def __init__(self):
         self.__conexao = mysql.connector.connect(
-              host='localhost',
-              user='root',
-              password='',
-              database='test'
+            host = 'paparella.com.br',
+            user = 'paparell_aluno_5',
+            password = '@Senai2025',
+            database = 'paparell_python'
         )
         self.__cursor = self.__conexao.cursor()
         self.criar_tabela()
