@@ -14,7 +14,6 @@ class Banco:
         self.criar_tabela()
 
     def criar_tabela(self):
-        self.__cursor.execute("DROP TABLE IF EXISTS dispositivos")
         self.__cursor.execute("""
             CREATE TABLE IF NOT EXISTS dispositivos (
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -59,20 +58,20 @@ class Banco:
         self.__cursor.close()
         self.__conexao.close()
 
-        def cadastro(self, informacoes):
-            self.__cursor.execute("SELECT COUNT(email) FROM dispositivos WHERE email=%s", (informacoes['email'],))
-            quantidade_de_emails = self.__cursor.fetchone()  # ← Lê o resultado antes do commit
-            self.__conexao.commit()
+    def cadastro(self, informacoes):
+        self.__cursor.execute("SELECT COUNT(email) FROM dispositivos WHERE email=%s", (informacoes['email'],))
+        quantidade_de_emails = self.__cursor.fetchone()  # ← Lê o resultado antes do commit
+        self.__conexao.commit()
 
-            if quantidade_de_emails[0] > 0:
-                print("Email já cadastrado, tente novamente")
-                return False
+        if quantidade_de_emails[0] > 0:
+            print("Email já cadastrado, tente novamente")
+            return False
 
-            self.__cursor.execute(
-                "INSERT INTO dispositivos (email, nome, senha, ip) VALUES (%s, %s, %s, %s)", 
-                (informacoes['email'], informacoes['nome'], informacoes['senha'], informacoes['ip'])
-            )
-            self.__conexao.commit()
+        self.__cursor.execute(
+            "INSERT INTO dispositivos (email, nome, senha, ip) VALUES (%s, %s, %s, %s)", 
+            (informacoes['email'], informacoes['nome'], informacoes['senha'], informacoes['ip'])
+        )
+        self.__conexao.commit()
         return True
 
     def login(self, form):
