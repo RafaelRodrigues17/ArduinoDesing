@@ -27,47 +27,56 @@
       font-weight: bold;
       margin-top: 20px;
     }
+    .status-indicator {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin: 20px auto;
+      transition: background-color 0.3s ease;
+      background-color: #ff4d4d; /* Vermelho padrão (desligado) */
+    }
+    .status-on {
+      background-color: #4caf50; /* Verde (ligado) */
+    }
+    .status-off {
+      background-color: #ff4d4d; /* Vermelho (desligado) */
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Controle do LCD</h1>
-    <img src="static/img/lcd.png" class="img-led">
+    <h1>Controle do Sensor Touch</h1>
+    <img src="static/img/touch.png" class="img-led">
     <form action="/acender_lcd" method="POST">
-      <label for="ip">Digite o IP do usuário:</label>
-      <input type="text" id="ip" name="ip" placeholder="Ex: 192.168.0.10" required>
-
-      <label for="mensagem">Mensagem do LCD:</label>
-      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do LCD" required>
-
-    <button type="submit" class="ligar">Confirmar</button>
-    <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
+      <label for="mensagem">Indicador de Status</label>
     </form>
-         
-
+    
+    <div class="status-indicator" id="status-indicator"></div>
+    <p id="status-label">Desligado</p>
     <p id="mensagem"></p>
+    <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
   </div>
 
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
+    function atualizarStatus(ativo) {
+      const indicador = document.getElementById('status-indicator');
+      const label = document.getElementById('status-label');
+      if (ativo) {
+        indicador.classList.add('status-on');
+        indicador.classList.remove('status-off');
+        label.textContent = "Toque detectado";
+      } else {
+        indicador.classList.remove('status-on');
+        indicador.classList.add('status-off');
+        label.textContent = "Toque não detectado";
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
     }
 
-    function desligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
-    }
+    // Simulação para teste - substitua isso com sua lógica de backend
+    setInterval(() => {
+      const ativo = Math.random() < 0.5;
+      atualizarStatus(ativo);
+    }, 2000);
   </script>
 </body>
 </html>

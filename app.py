@@ -38,6 +38,10 @@ def buzzer():
 def pir():
     return render_template('pir.html')
 
+@app.route('/touch')
+def touch():
+    return render_template('touch.html')
+
 
 @app.route('/acender_led', methods=['POST'])
 def acender_led():

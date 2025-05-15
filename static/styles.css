@@ -25,6 +25,7 @@ h1 {
   font-weight: bold; /* Fonte em negrito */
   margin-bottom: 50px; /* Espaço abaixo do título */
   text-shadow: 2px 2px 4px black; /* Sombra no texto para destacar no fundo */
+  text-decoration: none;
 }
 
 /* Grade responsiva para organizar os sensores */
