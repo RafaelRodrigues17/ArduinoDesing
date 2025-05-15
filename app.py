@@ -61,16 +61,27 @@ def alterar_ultrassonico ():
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('led'))
     
-@app.route ('/alterar_pir', methos = ["POST"])
+@app.route ('/alterar_pir', methods = ['POST'])
 def alterar_pir ():
     ip = request.form.get ('ip')
-    estado_ultrassonico = int (request.form.get ('estado_pir'))
+    estado_pir = int (request.form.get ('estado_pir'))
 
-    if banco.mudar_estado_pir(ip, estado_ultrassonico):
+    if banco.mudar_estado_pir(ip, estado_pir):
         return redirect(url_for('pir'))
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('pir'))
+    
+@app.route ('/alterar_lcd', methods = ['POST'])
+def alterar_lcd ():
+    ip = request.form.get ('ip')
+    estado_lcd = int (request.form.get ('estado_lcd'))
+
+    if banco.mudar_estado_lcd(ip, estado_lcd):
+        return redirect(url_for('lcd'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('lcd'))
         
 @app.route('/cadastrar',methods = ["POST"])
 def cadastrar():

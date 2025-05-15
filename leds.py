@@ -1,20 +1,25 @@
 import socket
 import time
+from enum import Enum
 
+class componente(Enum):
+    LED = 1
+    ULTRASSONICO = 2
+    PIR = 3
 
-def principal(ip_usuario, estado_led, circuitos):
+def principal(ip_usuario, estado, circuitos):
 
     PORT = 5000
     MAX_TENTATIVAS = 30
     TIMEOUT = 5
 
 
-    if circuitos == 1:
-        msg = b"ligar\n" if estado_led == 1 else b"desligar\n" 
-    elif circuitos  == 2:
-        msg = b"ligar\n" if estado_ultrassonico == 1 else b"desligar\n"
-    elif circuitos == 3:
-        msg = b"ligar\n" if estado_pir == 1 else b"desligar\n"
+    if circuitos == componente.LED:
+        msg = b"ligar\n" if estado == 1 else b"desligar\n" 
+    elif circuitos  == componente.ULTRASSONICO:
+        msg = b"ligar\n" if estado== 1 else b"desligar\n"
+    elif circuitos == componente.PIR:
+        msg = b"ligar\n" if estado == 1 else b"desligar\n"
 
     s = None 
     for tentativa in range(1, MAX_TENTATIVAS + 1):
