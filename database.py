@@ -38,25 +38,20 @@ class Banco:
         self.__cursor.execute("INSERT INTO dispositivos (ip) VALUES (%s)", ('123',))
         self.__conexao.commit()
 
-    def acender(self, ip):
-        
-        self.__cursor.execute("SELECT ip, estado_led FROM dispositivos WHERE ip = %s", (ip,))
+    def mudar_estado_led(self, ip, estado_led):
+        self.__cursor.execute("SELECT ip FROM dispositivos WHERE ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone()
 
         if ip_usuario:
-            estado_led = 1  
             self.__cursor.execute("UPDATE dispositivos SET estado_led = %s WHERE ip = %s", (estado_led, ip,))
             self.__conexao.commit()
             
-            # Enviar comando para o dispositivo
-            if principal(ip_usuario[0], estado_led, circuito = 1):
+            if principal(ip_usuario[0], estado_led, circuito=1):
                 return True
-            else:
-                return False
-        else:
-            return False
+        return False
+
         
-    def atualizar (self, ip):
+    def mudar_estado_ultrassonico (self, ip):
         
         self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone ()
