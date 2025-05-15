@@ -35,7 +35,7 @@ class Banco:
                 led TEXT
             )
         """)
-        self.__cursor.execute("INSERT INTO dispositivos (ip) VALUES (%s)", ('123',))
+        self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
         self.__conexao.commit()
 
     def mudar_estado_led(self, ip, estado_led):
@@ -51,23 +51,20 @@ class Banco:
         return False
 
         
-    def mudar_estado_ultrassonico (self, ip):
+    def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
         
         self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone ()
         
         if ip_usuario:
-            estado_ultrasssonico = 1
-            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrasssonico, ip,))
+            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
             
-            if principal (ip_usuario [0], estado_ultrasssonico, circuitos = 2):
+            if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
                 return True
-            else:
-                return False
         else:
             return False
-        
         
     def fechar(self):
         self.__cursor.close()
