@@ -36,6 +36,7 @@ class Banco:
             )
         """)
         self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
+        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, status integer, nome text, hora text, data text)""")
         self.__conexao.commit()
 
     def mudar_estado_led(self, ip, estado_led):
@@ -62,6 +63,21 @@ class Banco:
             self.__conexao.commit()
             
             if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
+                return True
+        else:
+            return False
+        
+    def mudar_estado_pir (self, ip, estado_pir):
+        
+        self.__cursor.execute ("select ip, pir from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET pir = %s WHERE ip = %s", (estado_ultrassonico, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+            if principal (ip_usuario [0], estado_pir, circuitos = 3):
                 return True
         else:
             return False
