@@ -10,7 +10,11 @@ def principal(ip_usuario, estado_led, circuitos):
 
 
     if circuitos == 1:
-        msg = b"ligar\n" if estado_led == 1 else b"desligar\n"  
+        msg = b"ligar\n" if estado_led == 1 else b"desligar\n" 
+    elif circuitos  == 2:
+        msg = b"ligar\n" if estado_ultrassonico == 1 else b"desligar\n"
+    elif circuitos == 3:
+        msg = b"ligar\n" if estado_pir == 1 else b"desligar\n"
 
     s = None 
     for tentativa in range(1, MAX_TENTATIVAS + 1):
@@ -30,3 +34,4 @@ def principal(ip_usuario, estado_led, circuitos):
             if s:
                 s.close()
                 print("Conexão fechada.\n")
+
