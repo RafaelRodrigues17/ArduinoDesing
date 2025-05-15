@@ -34,16 +34,20 @@ def fotoresistor():
 def buzzer():
     return render_template('buzzer.html')
 
-@app.route('/acender_led', methods=['POST'])
-def acender_led():
-    ip = request.form.get('ip')
-    estado_led = int(request.form.get('estado_led'))
-
-
 @app.route('/pir')
 def pir():
     return render_template('pir.html')
 
+@app.route('/alterar_led', methods=['POST'])
+def alterar_led():
+    ip = request.form.get('ip')
+    estado_led = int(request.form.get('estado_led'))  # 0 ou 1
+
+    if banco.mudar_estado_led(ip, estado_led):
+        return redirect(url_for('led'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('led'))
 
         
 @app.route ('/ativar_ultrassonico', methods = ['POST'])
@@ -51,13 +55,11 @@ def ativar_ultrassonico ():
     ip = request.form.get ('ip')
     estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
 
-    if request.method == "POST":
-        if banco.atualizar(ip) == True:
-            return redirect(url_for('ultrassonico'))
-        
-        else:
-            flash("ip nao encontrado")
-            return redirect(url_for('ultrassonico'))
+    if banco.mudar_estado_ultrassonico(ip, estado_ultrassonico):
+        return redirect(url_for('led'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('led'))
         
 @app.route('/cadastrar',methods = ["POST"])
 def cadastrar():
@@ -90,20 +92,6 @@ def login():
 def led():
     mensagem = request.args.get("mensagem")
     return render_template("led.html", mensagem=mensagem)
-
-@app.route("/acender_led", methods=["POST"])
-def acender_led():
-    estado_led = request.form.get("estado_led")
-    ip = session.get("ip")  # já armazenado no home.html
-    if not ip:
-        return "IP não definido", 400
-    
-
-    # Aqui você colocaria o código para enviar o comando ao LED, como via requests
-
-    mensagem = "LED ligado com sucesso!" if estado_led == "1" else "LED desligado com sucesso!"
-    return redirect(url_for("led", mensagem=mensagem))
-
 
 if __name__ == '__main__':
         app.run(debug=True)
