@@ -34,7 +34,7 @@
   <div class="container">
     <h1>Controle do LED</h1>
     <img src="static/img/led.png" class="img-led">
-    <form id="form_led" action="/acender_led" method="POST">
+    <form id="form_led" action="/alterar_led" method="POST">
       <input type="hidden" id="estado_led" name="estado_led" value="1">
       <button type="submit" class="ligar" onclick="return definirEstado('ligar')">Ligar LED</button>
       <button type="submit" class="desligar" onclick="return definirEstado('desligar')">Desligar LED</button> 

@@ -121,6 +121,59 @@ class Banco:
                 if tentativa == MAX_TENTATIVAS:
                     return False, str(e)
                 time.sleep(1)  # Espera antes de tentar novamente
+        self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
+        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, nome text, hora text, data text)""")
+        self.__conexao.commit()
+
+        
+    def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
+        
+        self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+        #     if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
+        #         return True
+        # else:
+        #     return False
+        
+    def mudar_estado_pir (self, ip, estado_pir):
+        
+        self.__cursor.execute ("select ip, pir from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET pir = %s WHERE ip = %s", (estado_pir, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+        #     if principal (ip_usuario [0], estado_pir, circuitos = 3):
+        #         return True
+        # else:
+        #     return False
+        
+    def mudar_estado_lcd (self, ip, estado_lcd):
+        
+        self.__cursor.execute ("select ip, teclado from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET teclado = %s WHERE ip = %s", (estado_lcd, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+        #     if principal (ip_usuario [0], estado_lcd, circuitos = 3):
+        #         return True
+        # else:
+        #     return False
+        
+    def fechar(self):
+        self.__cursor.close()
+        self.__conexao.close()
 
     # Métodos de cadastro e login
     def cadastro(self, informacoes):
@@ -145,7 +198,12 @@ class Banco:
         usuario = self.__cursor.fetchone()
         return usuario and usuario[3] == form['senha']
 
-    def fechar(self):
-        """Fecha a conexão com o banco"""
-        self.__cursor.close()
-        self.__conexao.close()
+    # def fechar(self):
+    #     """Fecha a conexão com o banco"""
+    #     self.__cursor.close()
+    #     self.__conexao.close()
+        #  if usuario and usuario[3] == form['senha']:
+        #      session['id'] = usuario[0]
+        #     session['email'] = usuario[1]
+        #      return True
+        #  return False

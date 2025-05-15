@@ -45,6 +45,58 @@ def acender_led():
 
     if banco.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
         flash("LED controlado com sucesso!")
+@app.route('/alterar_led', methods=['POST'])
+def alterar_led():
+    ip = request.form.get('ip')
+    estado_led = int(request.form.get('estado_led'))  # 0 ou 1
+
+    if banco.mudar_estado_led(ip, estado_led):
+        return redirect(url_for('led'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('led'))
+
+        
+@app.route ('/alterar_ultrassonico', methods = ['POST'])
+def alterar_ultrassonico ():
+    ip = request.form.get ('ip')
+    estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
+
+    if banco.mudar_estado_ultrassonico(ip, estado_ultrassonico):
+        return redirect(url_for('led'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('led'))
+    
+@app.route ('/alterar_pir', methods = ['POST'])
+def alterar_pir ():
+    ip = request.form.get ('ip')
+    estado_pir = int (request.form.get ('estado_pir'))
+
+    if banco.mudar_estado_pir(ip, estado_pir):
+        return redirect(url_for('pir'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('pir'))
+    
+@app.route ('/alterar_lcd', methods = ['POST'])
+def alterar_lcd ():
+    ip = request.form.get ('ip')
+    estado_lcd = int (request.form.get ('estado_lcd'))
+
+    if banco.mudar_estado_lcd(ip, estado_lcd):
+        return redirect(url_for('lcd'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('lcd'))
+        
+@app.route('/cadastrar',methods = ["POST"])
+def cadastrar():
+    banco = Banco()
+    form = request.form
+    
+    if banco.cadastro(form) == True:
+        return render_template('index.html')
     else:
         flash("Erro ao controlar LED!")
     
@@ -102,7 +154,8 @@ def login():
 # Rota para a página do LED (mantida para compatibilidade)
 @app.route("/led")
 def led():
-    return render_template("led.html")
+    mensagem = request.args.get("mensagem")
+    return render_template("led.html", mensagem=mensagem)
 
 if __name__ == '__main__':
     app.run(debug=True)  # Executa o servidor Flask em modo debug
