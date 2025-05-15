@@ -38,6 +38,8 @@
       <input type="hidden" id="estado_led" name="estado_led" value="1">
       <button type="submit" class="ligar" onclick="return definirEstado('ligar')">Ligar LED</button>
       <button type="submit" class="desligar" onclick="return definirEstado('desligar')">Desligar LED</button> 
+
+      <button type="button" class="ligar" id="voltar" onclick="window.location.href='/home'">Voltar</button>
     </form>
 
     {% if mensagem %}
