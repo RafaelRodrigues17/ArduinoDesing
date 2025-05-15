@@ -1,23 +1,22 @@
 from flask import Flask, render_template, flash, session, request, redirect, url_for
 from database import Banco
 
+# Inicializa a aplicação Flask e o banco de dados
 banco = Banco()
-
 app = Flask(__name__)
-app.secret_key = "chave_muito_segura"
+app.secret_key = "chave_muito_segura"  # Chave necessária para sessões Flask
 
-@app.route('/') #rota para a página inicial
+# Rota para a página inicial
+@app.route('/')
 def index():
     return render_template('index.html')
 
+# Rota para a página home (após login)
 @app.route('/home')
 def home():
     return render_template('home.html')
 
-@app.route('/cadastro')
-def cadastro():
-    return render_template('cadastro.html')
-
+# Rotas para as páginas de componentes
 @app.route('/lcd')
 def lcd():
     return render_template('lcd.html')
@@ -34,76 +33,76 @@ def fotoresistor():
 def buzzer():
     return render_template('buzzer.html')
 
-@app.route('/acender_led', methods=['POST'])
-def acender_led():
-    ip = request.form.get('ip')
-    estado_led = int(request.form.get('estado_led'))
-
-
 @app.route('/pir')
 def pir():
     return render_template('pir.html')
 
+# Rota para controle do LED (mantida para compatibilidade)
+@app.route('/acender_led', methods=['POST'])
+def acender_led():
+    ip = "10.0.0.178"  # IP fixo do dispositivo
+    estado_led = int(request.form.get('estado_led'))
 
-        
-@app.route ('/ativar_ultrassonico', methods = ['POST'])
-def ativar_ultrassonico ():
-    ip = request.form.get ('ip')
-    estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
-
-    if request.method == "POST":
-        if banco.atualizar(ip) == True:
-            return redirect(url_for('ultrassonico'))
-        
-        else:
-            flash("ip nao encontrado")
-            return redirect(url_for('ultrassonico'))
-        
-@app.route('/cadastrar',methods = ["POST"])
-def cadastrar():
-    banco = Banco()
-    form = request.form
-    
-    if banco.cadastro(form) == True:
-        return render_template('index.html')
+    if banco.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
+        flash("LED controlado com sucesso!")
     else:
-        return ("erro1")
+        flash("Erro ao controlar LED!")
+    
+    return redirect(url_for('led'))
 
-@app.route('/login',methods = ['GET','POST'])   
+# Nova rota para controle geral dos dispositivos
+@app.route('/controle', methods=['GET', 'POST'])
+def controle():
+    if request.method == 'POST':
+        dispositivo = request.form.get('dispositivo')
+        comando = request.form.get('comando')
+        
+        # Envia o comando para o dispositivo selecionado
+        sucesso, mensagem = banco.enviar_comando(dispositivo, comando)
+        
+        if sucesso:
+            flash(f"Sucesso: {mensagem}")
+        else:
+            flash(f"Erro: {mensagem}")
+            
+        return redirect(url_for('controle'))
+    
+    # Lista de dispositivos e comandos para o template
+    dispositivos = list(banco.ARDUINO_IPS.keys())
+    comandos = ['ligar', 'desligar', 'ultra', 'lcd', 'temperatura']
+    
+    return render_template('controle.html', 
+                         dispositivos=dispositivos,
+                         comandos=comandos)
+
+# Rotas para cadastro e login
+@app.route('/cadastro')
+def cadastro():
+    return render_template('cadastro.html')
+
+@app.route('/cadastrar', methods=["POST"])
+def cadastrar():
+    form = request.form
+    if banco.cadastro(form):
+        flash("Cadastro realizado com sucesso!")
+        return redirect(url_for('index'))
+    else:
+        flash("Erro ao realizar cadastro!")
+        return redirect(url_for('cadastro'))
+
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        form =  request.form
-        email = form['email']
-
-        if banco.login(form) == True:
-
-            session['ip']= "144555115" #ip deve vir do banco de dados
-
+        if banco.login(request.form):
             return redirect(url_for('home'))
-
         else:
-            flash("senha ou email incorreto")
-        
+            flash("Senha ou e-mail incorreto!")
     return render_template('login.html')
 
+# Rota para a página do LED (mantida para compatibilidade)
 @app.route("/led")
 def led():
-    mensagem = request.args.get("mensagem")
-    return render_template("led.html", mensagem=mensagem)
-
-@app.route("/acender_led", methods=["POST"])
-def acender_led():
-    estado_led = request.form.get("estado_led")
-    ip = session.get("ip")  # já armazenado no home.html
-    if not ip:
-        return "IP não definido", 400
-    
-
-    # Aqui você colocaria o código para enviar o comando ao LED, como via requests
-
-    mensagem = "LED ligado com sucesso!" if estado_led == "1" else "LED desligado com sucesso!"
-    return redirect(url_for("led", mensagem=mensagem))
-
+    return render_template("led.html")
 
 if __name__ == '__main__':
-        app.run(debug=True)
+    app.run(debug=True)  # Executa o servidor Flask em modo debug
