@@ -36,7 +36,7 @@ class Banco:
             )
         """)
         self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
-        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, status integer, nome text, hora text, data text)""")
+        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, nome text, hora text, data text)""")
         self.__conexao.commit()
 
     def mudar_estado_led(self, ip, estado_led):
@@ -73,11 +73,26 @@ class Banco:
         ip_usuario = self.__cursor.fetchone ()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET pir = %s WHERE ip = %s", (estado_ultrassonico, ip,))
+            self.__cursor.execute("UPDATE dispositivos SET pir = %s WHERE ip = %s", (estado_pir, ip,))
             self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
             
             if principal (ip_usuario [0], estado_pir, circuitos = 3):
+                return True
+        else:
+            return False
+        
+    def mudar_estado_lcd (self, ip, estado_lcd):
+        
+        self.__cursor.execute ("select ip, teclado from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET teclado = %s WHERE ip = %s", (estado_lcd, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+            if principal (ip_usuario [0], estado_lcd, circuitos = 3):
                 return True
         else:
             return False
@@ -110,21 +125,3 @@ class Banco:
             session['email'] = usuario[1]
             return True
         return False
-    
-    # def acender_lcd(self,informacoes):
-        
-    #     self.__cursor.execute("SELECT ip, estado_led FROM dispositivos WHERE ip = %s", (ip,))
-    #     ip_usuario = self.__cursor.fetchone()
-
-    #     if ip_usuario:
-    #         estado_led = 1  
-    #         self.__cursor.execute("UPDATE dispositivos SET estado_led = %s WHERE ip = %s", (estado_led, ip,))
-    #         self.__conexao.commit()
-            
-    #         # Enviar comando para o dispositivo
-    #         if principal(ip_usuario[0], estado_led):
-    #             return True
-    #         else:
-    #             return False
-    #     else:
-    #         return False

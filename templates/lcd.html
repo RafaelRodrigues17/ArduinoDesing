@@ -33,7 +33,7 @@
   <div class="container">
     <h1>Controle do LCD</h1>
     <img src="static/img/lcd.png" class="img-led">
-    <form action="/acender_lcd" method="POST">
+    <form action="/alterar_lcd" method="POST">
       <label for="ip">Digite o IP do usuário:</label>
       <input type="text" id="ip" name="ip" placeholder="Ex: 192.168.0.10" required>
 
@@ -49,24 +49,24 @@
   </div>
 
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
-    }
 
-    function desligarLcd() {
+    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
+
+    function validarIP(acao) {
       const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
+      const erroElement = document.getElementById('erro');
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false;
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
+      else {
+        erroElement.textContent = "";
+        document.getElementById('valor_lcd').value = (acao === 'ligar');
+        return true;
+      }
+      
+      document.getElementById('mensagem').textContent = "O LCD está ligado!";
+
     }
   </script>
 </body>
