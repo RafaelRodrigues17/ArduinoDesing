@@ -38,13 +38,19 @@ def pir():
     return render_template('pir.html')
 
 # Rota para controle do LED (mantida para compatibilidade)
-@app.route('/acender_led', methods=['POST'])
+@app.route('/alterar_led', methods=['POST'])
 def acender_led():
     ip = "10.0.0.178"  # IP fixo do dispositivo
     estado_led = int(request.form.get('estado_led'))
 
     if banco.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
         flash("LED controlado com sucesso!")
+        if banco.mudar_estado_led(ip, estado_led):
+            return redirect(url_for('led'))
+        else:
+            flash("IP não encontrado ou erro ao enviar comando")
+            return redirect(url_for('led'))
+
 @app.route('/alterar_led', methods=['POST'])
 def alterar_led():
     ip = request.form.get('ip')
@@ -89,18 +95,6 @@ def alterar_lcd ():
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('lcd'))
-        
-@app.route('/cadastrar',methods = ["POST"])
-def cadastrar():
-    banco = Banco()
-    form = request.form
-    
-    if banco.cadastro(form) == True:
-        return render_template('index.html')
-    else:
-        flash("Erro ao controlar LED!")
-    
-    return redirect(url_for('led'))
 
 # Nova rota para controle geral dos dispositivos
 @app.route('/controle', methods=['GET', 'POST'])
@@ -132,7 +126,7 @@ def controle():
 def cadastro():
     return render_template('cadastro.html')
 
-@app.route('/cadastrar', methods=["POST"])
+@app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     form = request.form
     if banco.cadastro(form):
