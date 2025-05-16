@@ -62,6 +62,8 @@ class Banco:
                 led TEXT
             )
         """)
+        self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
+        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, nome text, hora text, data text)""")
         self.__conexao.commit()
 
     # Método principal para enviar comandos aos dispositivos
@@ -121,11 +123,22 @@ class Banco:
                 if tentativa == MAX_TENTATIVAS:
                     return False, str(e)
                 time.sleep(1)  # Espera antes de tentar novamente
-        self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
-        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, nome text, hora text, data text)""")
-        self.__conexao.commit()
-
         
+    def mudar_estado_led (self, ip, estado_ultrassonico):
+        
+        self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
+            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+        #     if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
+        #         return True
+        # else:
+        #     return False
+    
     def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
         
         self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
@@ -198,12 +211,8 @@ class Banco:
         usuario = self.__cursor.fetchone()
         return usuario and usuario[3] == form['senha']
 
-    # def fechar(self):
-    #     """Fecha a conexão com o banco"""
-    #     self.__cursor.close()
-    #     self.__conexao.close()
-        #  if usuario and usuario[3] == form['senha']:
-        #      session['id'] = usuario[0]
+        # if usuario and usuario[3] == form['senha']:
+        #     session['id'] = usuario[0]
         #     session['email'] = usuario[1]
-        #      return True
-        #  return False
+        #     return True
+        # return False
