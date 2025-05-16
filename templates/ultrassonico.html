@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle do Sensor Ultrassônico</title>
+  <title>Controle - Sensor Ultrassônico</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
     .container {
@@ -22,10 +22,6 @@
         height: auto;
         margin: 20px auto;
         display: block;
-    }
-    #mensagem {
-      font-weight: bold;
-      margin-top: 20px;
     }
     .tabela-container {
         background-color: #1eff0046;
@@ -103,7 +99,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Controle do Ultrassônico</h1>
+    <h1>Controle do Sensor Ultrassônico</h1>
     <img src="static/img/ultrassonico.png" class="img-led">
     <form action="/alterar_ultrassonico" method="POST">
 
@@ -120,24 +116,14 @@
           </tr>
         </thead>
         <tbody>
+          {% for distancia, nome, hora, data in registros %}
           <tr>
-            <td>95 cm</td>
-            <td>Sensor A</td>
-            <td>14:35</td>
-            <td>15/05/2025</td>
+            <td>{{ distancia }} cm </td>
+            <td>{{ nome }}</td>
+            <td>{{ hora }}</td>
+            <td>{{ data }}</td>
           </tr>
-          <tr>
-            <td>102 cm</td>
-            <td>Sensor B</td>
-            <td>14:40</td>
-            <td>15/05/2025</td>
-          </tr>
-          <tr>
-            <td>78 cm</td>
-            <td>Sensor C</td>
-            <td>14:45</td>
-            <td>15/05/2025</td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>

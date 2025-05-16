@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle - Buzzer</title>
+  <title>Controle - RFID</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
     .container {
@@ -31,12 +31,12 @@
 </head>
 <body>
   <div class="container">
-    <h1>Controle do Buzzer</h1>
-    <img src="static/img/buzzer.png" class="img-led">
-    <form action="/acender_buzzer" method="POST">
+    <h1>Controle do Leitor RFID</h1>
+    <img src="static/img/rfid.png" class="img-led">
+    <form action="/alterar_rfid" method="POST">
 
-      <label for="mensagem">Notas para adicionar:</label>
-      <input type="text" id="mensagem" name="mensagem" placeholder="Dó, Ré, Mi, Fá..." required>
+      <label for="mensagem">Mensagem do RFID:</label>
+      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do  RFID" required>
 
     <button type="submit" class="ligar">Confirmar</button>
     <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
@@ -47,24 +47,24 @@
   </div>
 
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
-    }
 
-    function desligarLcd() {
+    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
+
+    function validarIP(acao) {
       const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
+      const erroElement = document.getElementById('erro');
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false;
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
+      else {
+        erroElement.textContent = "";
+        document.getElementById('valor_lcd').value = (acao === 'ligar');
+        return true;
+      }
+      
+      document.getElementById('mensagem').textContent = "O LCD está ligado!";
+
     }
   </script>
 </body>
