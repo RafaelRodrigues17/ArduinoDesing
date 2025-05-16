@@ -106,6 +106,7 @@
     <h1>Controle do Ultrassônico</h1>
     <img src="static/img/ultrassonico.png" class="img-led">
     <form action="/alterar_ultrassonico" method="POST">
+
       <input type="hidden" id="estado_ultrassonico" name="estado_ultrassonico" value="1">
     </form>
     <div class="tabela-container">
@@ -162,6 +163,9 @@
         label.textContent = 'Desligado';
         console.log('Ultrassônico Desligado');
       }
+
+      document.getElementById('mensagem').textContent = "O ultrassonico está ligado!";
+
     }
   </script>
 </body>

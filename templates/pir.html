@@ -33,7 +33,7 @@
   <div class="container">
     <h1>Controle do Sensor Pir</h1>
     <img src="static/img/pir.png" class="img-led">
-    <form action="/acender_pir" method="POST">
+    <form action="/alterar_pir" method="POST">
 
       <label for="mensagem">Mensagem do Pir:</label>
       <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do Pir" required>
@@ -47,24 +47,24 @@
   </div>
 
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
-      }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
-    }
 
-    function desligarLcd() {
+    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
+
+    function validarIP(acao) {
       const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
-        return;
+      const erroElement = document.getElementById('erro');
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false;
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
+      else {
+        erroElement.textContent = "";
+        document.getElementById('valor_pir').value = (acao === 'ligar');
+        return true;
+      }
+      
+      document.getElementById('mensagem').textContent = "O PIR está ligado!";
+
     }
   </script>
 </body>
