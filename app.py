@@ -1,8 +1,10 @@
 from flask import Flask, render_template, flash, session, request, redirect, url_for
-from database import Banco
+from database_remoto import BancoRemoto
+from database_local import BancoLocal
 
 # Inicializa a aplicação Flask e o banco de dados
-banco = Banco()
+banco_remoto = BancoRemoto()
+banco_local = BancoLocal()
 app = Flask(__name__)
 app.secret_key = "chave_muito_segura"  # Chave necessária para sessões Flask
 
@@ -48,9 +50,9 @@ def acender_led():
     ip = "10.0.0.178"  # IP fixo do dispositivo
     estado_led = int(request.form.get('estado_led'))
 
-    if banco.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
+    if banco_remoto.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
         flash("LED controlado com sucesso!")
-        if banco.mudar_estado_led(ip, estado_led):
+        if banco_remoto.mudar_estado_led(ip, estado_led):
             return redirect(url_for('led'))
         else:
             flash("IP não encontrado ou erro ao enviar comando")
@@ -61,21 +63,11 @@ def alterar_led():
     ip = request.form.get('ip')
     estado_led = int(request.form.get('estado_led'))  # 0 ou 1
 
-    if banco.mudar_estado_led(ip, estado_led):
+    if banco_remoto.mudar_estado_led(ip, estado_led):
         return redirect(url_for('led'))
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('led'))
-
-@app.route('/acender_led', methods=['POST'])
-def acender_led():
-    ip = request.form.get('ip')
-    estado_led = int(request.form.get('estado_led'))
-    
-    if request.method == "POST":
-        if banco.acender(ip) == True:
-            return redirect(url_for('led'))
-        
 
 @app.route ('/alterar_ultrassonico', methods = ['POST'])
 def alterar_ultrassonico ():
@@ -83,18 +75,19 @@ def alterar_ultrassonico ():
     ip = request.form.get ('ip')
     estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
 
-    if banco.mudar_estado_ultrassonico(ip, estado_ultrassonico):
-        return redirect(url_for('led'))
+    if banco_remoto.mudar_estado_ultrassonico(ip, estado_ultrassonico):
+        registros = banco_local.dados_ultrassonico()
+        return render_template('ultrassonico.html', registros=registros)
     else:
         flash("IP não encontrado ou erro ao enviar comando")
-        return redirect(url_for('led'))
+        return redirect(url_for('ultrassonico'))
     
 @app.route ('/alterar_pir', methods = ['POST'])
 def alterar_pir ():
     ip = request.form.get ('ip')
     estado_pir = int (request.form.get ('estado_pir'))
 
-    if banco.mudar_estado_pir(ip, estado_pir):
+    if banco_remoto.mudar_estado_pir(ip, estado_pir):
         return redirect(url_for('pir'))
     else:
         flash("IP não encontrado ou erro ao enviar comando")
@@ -105,7 +98,7 @@ def alterar_lcd ():
     ip = request.form.get ('ip')
     estado_lcd = int (request.form.get ('estado_lcd'))
 
-    if banco.mudar_estado_lcd(ip, estado_lcd):
+    if banco_remoto.mudar_estado_lcd(ip, estado_lcd):
         return redirect(url_for('lcd'))
     else:
         flash("IP não encontrado ou erro ao enviar comando")
@@ -119,7 +112,7 @@ def controle():
         comando = request.form.get('comando')
         
         # Envia o comando para o dispositivo selecionado
-        sucesso, mensagem = banco.enviar_comando(dispositivo, comando)
+        sucesso, mensagem = banco_remoto.enviar_comando(dispositivo, comando)
         
         if sucesso:
             flash(f"Sucesso: {mensagem}")
@@ -129,7 +122,7 @@ def controle():
         return redirect(url_for('controle'))
     
     # Lista de dispositivos e comandos para o template
-    dispositivos = list(banco.ARDUINO_IPS.keys())
+    dispositivos = list(banco_remoto.ARDUINO_IPS.keys())
     comandos = ['ligar', 'desligar', 'ultra', 'lcd', 'temperatura']
     
     return render_template('controle.html', 
@@ -144,7 +137,7 @@ def cadastro():
 @app.route('/cadastrar', methods=['POST'])
 def cadastrar():
     form = request.form
-    if banco.cadastro(form):
+    if banco_remoto.cadastro(form):
         flash("Cadastro realizado com sucesso!")
         return redirect(url_for('index'))
     else:
@@ -154,7 +147,7 @@ def cadastrar():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if banco.login(request.form):
+        if banco_remoto.login(request.form):
             return redirect(url_for('home'))
         else:
             flash("Senha ou e-mail incorreto!")

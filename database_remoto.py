@@ -1,8 +1,9 @@
 import mysql.connector
+from config import MYSQL_CONFIG
 import socket
 import time
 
-class Banco:
+class BancoRemoto:
     # Dicionário com os IPs dos dispositivos e seus nomes
     ARDUINO_IPS = {
         "Rafael1": "192.168.1.157",
@@ -22,12 +23,7 @@ class Banco:
     # Método para conectar ao banco de dados MySQL
     def conectar(self):
         try:
-            self.__conexao = mysql.connector.connect(
-                host="paparella.com.br",
-                user="paparell_aluno_8",
-                password="@Senai2025",
-                database="paparell_python"
-            )
+            self.__conexao = mysql.connector.connect(**MYSQL_CONFIG)
             self.__cursor = self.__conexao.cursor(buffered=True)
             print("Conexão com o banco estabelecida!")
         except mysql.connector.Error as err:
@@ -62,8 +58,6 @@ class Banco:
                 led TEXT
             )
         """)
-        self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
-        self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, nome text, hora text, data text)""")
         self.__conexao.commit()
 
     # Método principal para enviar comandos aos dispositivos
@@ -210,9 +204,3 @@ class Banco:
         self.__cursor.execute("SELECT * FROM dispositivos WHERE email = %s", (form['email'],))
         usuario = self.__cursor.fetchone()
         return usuario and usuario[3] == form['senha']
-
-        # if usuario and usuario[3] == form['senha']:
-        #     session['id'] = usuario[0]
-        #     session['email'] = usuario[1]
-        #     return True
-        # return False
