@@ -37,6 +37,11 @@ def buzzer():
 def pir():
     return render_template('pir.html')
 
+@app.route('/touch')
+def touch():
+    return render_template('touch.html')
+
+
 # Rota para controle do LED (mantida para compatibilidade)
 @app.route('/alterar_led', methods=['POST'])
 def acender_led():
@@ -62,9 +67,19 @@ def alterar_led():
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('led'))
 
+@app.route('/acender_led', methods=['POST'])
+def acender_led():
+    ip = request.form.get('ip')
+    estado_led = int(request.form.get('estado_led'))
+    
+    if request.method == "POST":
+        if banco.acender(ip) == True:
+            return redirect(url_for('led'))
         
+
 @app.route ('/alterar_ultrassonico', methods = ['POST'])
 def alterar_ultrassonico ():
+
     ip = request.form.get ('ip')
     estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
 
@@ -150,6 +165,6 @@ def login():
 def led():
     mensagem = request.args.get("mensagem")
     return render_template("led.html", mensagem=mensagem)
-
+  
 if __name__ == '__main__':
     app.run(debug=True)  # Executa o servidor Flask em modo debug

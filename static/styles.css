@@ -25,6 +25,7 @@ h1 {
   font-weight: bold; /* Fonte em negrito */
   margin-bottom: 50px; /* Espaço abaixo do título */
   text-shadow: 2px 2px 4px black; /* Sombra no texto para destacar no fundo */
+  text-decoration: none;
 }
 
 /* Grade responsiva para organizar os sensores */
@@ -73,11 +74,12 @@ h1 {
 }
 /* Botão azul para ligar o LED */
 button.ligar {
+  margin-top: 20px;
   background-color: #007bff; /* Azul */
   color: white;
   border: none;
   border-radius: 10px;
-  cursor: pointer;
+  cursor: pointer; 
   font-weight: bold;
   transition: background 0.3s;
 }
@@ -270,4 +272,8 @@ body#index {
 
 a.atualizar svg {
   margin: 30px;
+}
+
+button#voltar {
+  margin-top: 70px;
 }

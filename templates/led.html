@@ -38,13 +38,15 @@
       <input type="hidden" id="estado_led" name="estado_led" value="1">
       <button type="submit" class="ligar" onclick="return definirEstado('ligar')">Ligar LED</button>
       <button type="submit" class="desligar" onclick="return definirEstado('desligar')">Desligar LED</button> 
+
+      <button type="button" class="ligar" id="voltar" onclick="window.location.href='/home'">Voltar</button>
     </form>
 
     {% if mensagem %}
       <p id="mensagem">{{ mensagem }}</p>
     {% endif %}
-  </div>
-
+  </div>  
+  
   <script>
     // Função que define o estado do LED antes de enviar o formulário
     function definirEstado(acao) {
