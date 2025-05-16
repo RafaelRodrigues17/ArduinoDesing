@@ -120,24 +120,14 @@
           </tr>
         </thead>
         <tbody>
+          {% for distancia, nome, hora, data in registros %}
           <tr>
-            <td>95 cm</td>
-            <td>Sensor A</td>
-            <td>14:35</td>
-            <td>15/05/2025</td>
+            <td>{{ distancia }} cm</td>
+            <td>{{ nome }}</td>
+            <td>{{ hora }}</td>
+            <td>{{ data }}</td>
           </tr>
-          <tr>
-            <td>102 cm</td>
-            <td>Sensor B</td>
-            <td>14:40</td>
-            <td>15/05/2025</td>
-          </tr>
-          <tr>
-            <td>78 cm</td>
-            <td>Sensor C</td>
-            <td>14:45</td>
-            <td>15/05/2025</td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
