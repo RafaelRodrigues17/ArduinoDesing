@@ -43,6 +43,10 @@ def pir():
 def touch():
     return render_template('touch.html')
 
+@app.route('/rfid')
+def rfid():
+    return render_template('rfid.html')
+
 
 # Rota para controle do LED (mantida para compatibilidade)
 @app.route('/alterar_led', methods=['POST'])

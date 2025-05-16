@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle do Sensor Pir</title>
+  <title>Controle - Sensor Pir</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
     .container {
@@ -23,10 +23,79 @@
         margin: 20px auto;
         display: block;
     }
-    #mensagem {
-      font-weight: bold;
-      margin-top: 20px;
+    .tabela-container {
+        background-color: #1eff0046;
+        padding: 20px;
+        border-radius: 20px;
+        margin-top: 30px;
+        text-align: left;
     }
+    .tabela-titulo {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: transparent;
+        font-weight: bold;
+    }
+    .switch-container {
+        margin: 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .switch {
+        position: relative;
+        width: 60px;
+        height: 30px;
+        margin-bottom: 10px;
+    }
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 30px;
+        transition: 0.4s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 24px;
+        width: 24px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: 0.4s;
+    }
+    input:checked + .slider {
+        background-color: #4caf50;
+    }
+    input:checked + .slider:before {
+        transform: translateX(30px);
+    }
+
   </style>
 </head>
 <body>
@@ -35,15 +104,31 @@
     <img src="static/img/pir.png" class="img-led">
     <form action="/alterar_pir" method="POST">
 
-      <label for="mensagem">Mensagem do Pir:</label>
-      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do Pir" required>
+      <input type="hidden" id="estado_ultrassonico" name="estado_ultrassonico" value="1">
+    </form>
+    <div class="tabela-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Horário</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for nome, hora, data in registros %}
+          <tr>
+            <td>{{ nome }}</td>
+            <td>{{ hora }}</td>
+            <td>{{ data }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-    <button type="submit" class="ligar">Confirmar</button>
     <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
     </form>
-         
-
-    <p id="mensagem"></p>
   </div>
 
   <script>
