@@ -1,21 +1,48 @@
 import mysql.connector
-from flask import session
-from leds import principal
+import socket
+import time
 
 class Banco:
+    # Dicionário com os IPs dos dispositivos e seus nomes
+    ARDUINO_IPS = {
+        "Rafael1": "192.168.1.157",
+        "Rafael2": "192.168.1.10",
+        "Dayane": "192.168.1.11",
+        "Rian": "192.168.1.167",
+        "Kauan": "192.168.1.105",
+        "Rodrigo": "192.168.1.174",
+        "Diemerson": "192.168.1.106",
+        "Davi": "192.168.1.178",
+        "Erick": "192.168.1.12"
+    }
+
     def __init__(self):
-        self.__conexao = mysql.connector.connect(
+        self.conectar()  # Conecta ao banco de dados ao inicializar
 
-            host = "paparella.com.br",
-            user = "paparell_aluno_8",
-            password = "@Senai2025",
-            database = "paparell_python"
+    # Método para conectar ao banco de dados MySQL
+    def conectar(self):
+        try:
+            self.__conexao = mysql.connector.connect(
+                host="paparella.com.br",
+                user="paparell_aluno_8",
+                password="@Senai2025",
+                database="paparell_python"
+            )
+            self.__cursor = self.__conexao.cursor(buffered=True)
+            print("Conexão com o banco estabelecida!")
+        except mysql.connector.Error as err:
+            print(f"Erro ao conectar ao banco: {err}")
 
-        )
-        self.__cursor = self.__conexao.cursor()
-        self.criar_tabela()
+    # Verifica se a conexão está ativa
+    def verificar_conexao(self):
+        try:
+            self.__cursor.execute("SELECT 1")
+        except mysql.connector.Error:
+            self.conectar()
 
+    # Cria a tabela de dispositivos se não existir
     def criar_tabela(self):
+        self.verificar_conexao()
         self.__cursor.execute("""
             CREATE TABLE IF NOT EXISTS dispositivos (
                 id INT PRIMARY KEY AUTO_INCREMENT,
@@ -24,7 +51,7 @@ class Banco:
                 senha TEXT,
                 estado_led INTEGER DEFAULT 0,
                 distancia TEXT,
-                ip text,
+                ip TEXT,
                 potenciometro TEXT,
                 pir TEXT,
                 relay TEXT,
@@ -35,21 +62,68 @@ class Banco:
                 led TEXT
             )
         """)
+        self.__conexao.commit()
+
+    # Método principal para enviar comandos aos dispositivos
+    def enviar_comando(self, dispositivo, comando):
+        """Envia comandos para os dispositivos via socket"""
+        self.verificar_conexao()
+        
+        # Configurações da conexão
+        PORT = 5000
+        MAX_TENTATIVAS = 3
+        TIMEOUT = 5
+        
+        # Verifica se o dispositivo existe
+        if dispositivo not in self.ARDUINO_IPS:
+            return False, "Dispositivo não encontrado"
+        
+        ip = self.ARDUINO_IPS[dispositivo]
+        
+        # Mapeamento de comandos para mensagens binárias
+        comandos = {
+            'ligar': b"ligar\n",
+            'desligar': b"desligar\n",
+            'distancia': b"distancia\n",
+            'lcd': b"lcd_on\n",
+            'temperatura': b"temperatura\n"
+        }
+        
+        # Verifica se o comando é válido
+        if comando not in comandos:
+            return False, "Comando inválido"
+        
+        msg = comandos[comando]
+        
+        # Tenta enviar o comando (com retentativas)
+        for tentativa in range(1, MAX_TENTATIVAS + 1):
+            try:
+                print(f"Enviando {comando} para {dispositivo} ({ip})")
+                s = socket.create_connection((ip, PORT), timeout=2)
+                s.settimeout(TIMEOUT)
+                s.sendall(msg)
+                resposta = s.recv(128).decode().strip()
+                s.close()
+                
+                # Atualiza o banco de dados conforme o comando
+                if comando in ['ligar', 'desligar']:
+                    estado = 1 if comando == 'ligar' else 0
+                    self.__cursor.execute(
+                        "UPDATE dispositivos SET estado_led = %s WHERE ip = %s",
+                        (estado, ip)
+                    )
+                    self.__conexao.commit()
+                
+                return True, resposta
+                
+            except (socket.timeout, OSError) as e:
+                print(f"Erro na tentativa {tentativa}: {e}")
+                if tentativa == MAX_TENTATIVAS:
+                    return False, str(e)
+                time.sleep(1)  # Espera antes de tentar novamente
         self.__cursor.execute ("""create table if not exists ultrassonico (id int primary key auto_increment, distancia integer, nome text, hora text, data text)""")
         self.__cursor.execute ("""create table if not exists pir (id int primary key auto_increment, nome text, hora text, data text)""")
         self.__conexao.commit()
-
-    def mudar_estado_led(self, ip, estado_led):
-        self.__cursor.execute("SELECT ip FROM dispositivos WHERE ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone()
-
-        if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET estado_led = %s WHERE ip = %s", (estado_led, ip,))
-            self.__conexao.commit()
-            
-            if principal(ip_usuario[0], estado_led, circuito=1):
-                return True
-        return False
 
         
     def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
@@ -62,10 +136,10 @@ class Banco:
             self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
             
-            if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
-                return True
-        else:
-            return False
+        #     if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
+        #         return True
+        # else:
+        #     return False
         
     def mudar_estado_pir (self, ip, estado_pir):
         
@@ -77,10 +151,10 @@ class Banco:
             self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
             
-            if principal (ip_usuario [0], estado_pir, circuitos = 3):
-                return True
-        else:
-            return False
+        #     if principal (ip_usuario [0], estado_pir, circuitos = 3):
+        #         return True
+        # else:
+        #     return False
         
     def mudar_estado_lcd (self, ip, estado_lcd):
         
@@ -92,36 +166,44 @@ class Banco:
             self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
             
-            if principal (ip_usuario [0], estado_lcd, circuitos = 3):
-                return True
-        else:
-            return False
+        #     if principal (ip_usuario [0], estado_lcd, circuitos = 3):
+        #         return True
+        # else:
+        #     return False
         
     def fechar(self):
         self.__cursor.close()
         self.__conexao.close()
 
+    # Métodos de cadastro e login
     def cadastro(self, informacoes):
-        self.__cursor.execute("SELECT COUNT(email) FROM dispositivos WHERE email=%s", (informacoes['email'],))
-        quantidade_de_emails = self.__cursor.fetchone()  # ← Lê o resultado antes do commit
-        self.__conexao.commit()
-
-        if quantidade_de_emails[0] > 0:
-            print("Email já cadastrado, tente novamente")
+        self.verificar_conexao()
+        # Verifica se email já existe
+        self.__cursor.execute("SELECT COUNT(email) FROM dispositivos WHERE email=%s", 
+                             (informacoes['email'],))
+        if self.__cursor.fetchone()[0] > 0:
             return False
 
+        # Insere novo usuário
         self.__cursor.execute(
-            "INSERT INTO dispositivos (email, nome, senha, ip) VALUES (%s, %s, %s, %s)", 
+            "INSERT INTO dispositivos (email, nome, senha, ip) VALUES (%s, %s, %s, %s)",
             (informacoes['email'], informacoes['nome'], informacoes['senha'], informacoes['ip'])
         )
         self.__conexao.commit()
         return True
 
     def login(self, form):
+        self.verificar_conexao()
         self.__cursor.execute("SELECT * FROM dispositivos WHERE email = %s", (form['email'],))
         usuario = self.__cursor.fetchone()
-        if usuario and usuario[3] == form['senha']:
-            session['id'] = usuario[0]
-            session['email'] = usuario[1]
-            return True
-        return False
+        return usuario and usuario[3] == form['senha']
+
+    # def fechar(self):
+    #     """Fecha a conexão com o banco"""
+    #     self.__cursor.close()
+    #     self.__conexao.close()
+        #  if usuario and usuario[3] == form['senha']:
+        #      session['id'] = usuario[0]
+        #     session['email'] = usuario[1]
+        #      return True
+        #  return False
