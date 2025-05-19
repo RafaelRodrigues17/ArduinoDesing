@@ -141,18 +141,8 @@
   </div>
 
   <script>
-    function definirEstado(estado) {
-      const label = document.getElementById('estado-label');
-      if (estado) {
-        label.textContent = 'Ligado';
-        console.log('Ultrassônico Ligado');
-      } else {
-        label.textContent = 'Desligado';
-        console.log('Ultrassônico Desligado');
-      }
-
-      document.getElementById('mensagem').textContent = "O ultrassonico está ligado!";
-
+    function definirEstado(acao) {
+      document.getElementById('distsncia').value = (acao === 'ligar') ? 1 : 0;
     }
   </script>
 </body>

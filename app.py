@@ -52,7 +52,7 @@ def rfid():
 
 # Rota para controle do LED (mantida para compatibilidade)
 @app.route('/alterar_led', methods=['POST'])
-def acender_led():
+def alterar_led():
     ip = "10.0.0.178"  # IP fixo do dispositivo
     estado_led = int(request.form.get('estado_led'))
 
@@ -64,17 +64,6 @@ def acender_led():
             flash("IP não encontrado ou erro ao enviar comando")
             return redirect(url_for('led'))
 
-@app.route('/alterar_led', methods=['POST'])
-def alterar_led():
-    ip = request.form.get('ip')
-    estado_led = int(request.form.get('estado_led'))  # 0 ou 1
-
-    if banco_remoto.mudar_estado_led(ip, estado_led):
-        return redirect(url_for('led'))
-    else:
-        flash("IP não encontrado ou erro ao enviar comando")
-        return redirect(url_for('led'))
-
 @app.route ('/alterar_ultrassonico', methods = ['POST'])
 def alterar_ultrassonico ():
 
@@ -82,8 +71,8 @@ def alterar_ultrassonico ():
     estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
 
     if banco_remoto.mudar_estado_ultrassonico(ip, estado_ultrassonico):
-        registros = banco_local.dados_ultrassonico()
-        return render_template('ultrassonico.html', registros=registros)
+        registros_ultrassonico = banco_local.dados_ultrassonico()
+        return render_template('ultrassonico.html', registros_ultrassonico = registros_ultrassonico)
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('ultrassonico'))
@@ -94,7 +83,8 @@ def alterar_pir ():
     estado_pir = int (request.form.get ('estado_pir'))
 
     if banco_remoto.mudar_estado_pir(ip, estado_pir):
-        return redirect(url_for('pir'))
+        registros_pir = banco_local.dados_pir()
+        return render_template('pir.html', registros_pir = registros_pir)
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('pir'))
@@ -109,6 +99,42 @@ def alterar_lcd ():
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('lcd'))
+    
+@app.route ('/alterar_fotoresistor', methods = ['POST'])
+def alterar_fotoresistor ():
+    ip = request.form.get ('ip')
+    estado_fotoresistor = int (request.form.get ('estado_fotoresistor'))
+
+    if banco_remoto.mudar_estado_fotoresistor(ip, estado_fotoresistor):
+        registros_fotoresistor = banco_local.dados_fotoresistor()
+        return render_template('fotoresistor.html', registros_fotoresistor = registros_fotoresistor)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('fotoresistor'))
+    
+@app.route ('/alterar_buzzer', methods = ['POST'])
+def alterar_buzzer ():
+    ip = request.form.get ('ip')
+    estado_buzzer = int (request.form.get ('estado_buzzer'))
+
+    if banco_remoto.mudar_estado_buzzer(ip, estado_buzzer):
+        registros_buzzer = banco_local.dados_buzzer()
+        return render_template('buzzer.html', registros_buzzer = registros_buzzer)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('buzzer'))
+    
+@app.route ('/alterar_touch', methods = ['POST'])
+def alterar_touch ():
+    ip = request.form.get ('ip')
+    estado_touch = int (request.form.get ('estado_touch'))
+
+    if banco_remoto.mudar_estado_touch(ip, estado_touch):
+        registros_touch = banco_local.dados_buzzer()
+        return render_template('touch.html', registros_touch = registros_touch)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('touch'))
 
 # Nova rota para controle geral dos dispositivos
 @app.route('/controle', methods=['GET', 'POST'])
