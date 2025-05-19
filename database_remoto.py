@@ -117,21 +117,18 @@ class BancoRemoto:
                 if tentativa == MAX_TENTATIVAS:
                     return False, str(e)
                 time.sleep(1)  # Espera antes de tentar novamente
+
+    
         
-    def mudar_estado_led (self, ip, estado_ultrassonico):
+    def mudar_estado_led (self, ip, estado_led):
         
-        self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
+        self.__cursor.execute ("select ip, led from dispositivos where ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone ()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
-            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET led = %s WHERE ip = %s", (estado_led, ip,))
             self.__conexao.commit()
             
-        #     if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
-        #         return True
-        # else:
-        #     return False
     
     def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
         

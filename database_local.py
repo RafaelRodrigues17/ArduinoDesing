@@ -15,3 +15,9 @@ class BancoLocal:
     def dados_ultrassonico (self):
         self.cursor.execute("SELECT distancia, nome, hora, data FROM ultrassonico ORDER BY id DESC LIMIT 10")
         return self.cursor.fetchall()
+    
+    def retornar(self,ip):
+
+        self.cursor.execute("insert from ultrassonico where ip = %s", (ip,))
+
+        return True

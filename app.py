@@ -51,7 +51,7 @@ def rfid():
 # Rota para controle do LED (mantida para compatibilidade)
 @app.route('/alterar_led', methods=['POST'])
 def acender_led():
-    ip = "10.0.0.178"  # IP fixo do dispositivo
+    ip = request.form.get('ip')
     estado_led = int(request.form.get('estado_led'))
 
     if banco_remoto.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
@@ -62,30 +62,31 @@ def acender_led():
             flash("IP não encontrado ou erro ao enviar comando")
             return redirect(url_for('led'))
 
-@app.route('/alterar_led', methods=['POST'])
-def alterar_led():
+
+@app.route('/alterar_ultrassonico', methods=['POST'])
+def alterar_ultrassonico():
     ip = request.form.get('ip')
-    estado_led = int(request.form.get('estado_led'))  # 0 ou 1
-
-    if banco_remoto.mudar_estado_led(ip, estado_led):
-        return redirect(url_for('led'))
-    else:
-        flash("IP não encontrado ou erro ao enviar comando")
-        return redirect(url_for('led'))
-
-@app.route ('/alterar_ultrassonico', methods = ['POST'])
-def alterar_ultrassonico ():
-
-    ip = request.form.get ('ip')
-    estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
-
-    if banco_remoto.mudar_estado_ultrassonico(ip, estado_ultrassonico):
-        registros = banco_local.dados_ultrassonico()
-        return render_template('ultrassonico.html', registros=registros)
-    else:
-        flash("IP não encontrado ou erro ao enviar comando")
+    estado_ultrassonico = int(request.form.get('estado_ultrassonico'))
+    
+    # Primeiro verifica se o dispositivo existe
+    dispositivo = next((k for k, v in banco_remoto.ARDUINO_IPS.items() if v == ip), None)
+    if not dispositivo:
+        flash("Dispositivo não encontrado")
         return redirect(url_for('ultrassonico'))
     
+    # Envia o comando de distância
+    sucesso, resposta = banco_remoto.enviar_comando(dispositivo, 'distancia')
+    
+    if sucesso:
+        # Atualiza o estado ultrassônico (você precisa implementar esta função)
+        if banco_remoto.mudar_estado_ultrassonico(ip, estado_ultrassonico):
+            flash("Sensor ultrassônico controlado com sucesso!")
+            registros = banco_local.dados_ultrassonico()
+            return render_template('ultrassonico.html', registros=registros)
+    
+    flash(f"Falha ao controlar: {resposta}")
+    return redirect(url_for('ultrassonico'))
+
 @app.route ('/alterar_pir', methods = ['POST'])
 def alterar_pir ():
     ip = request.form.get ('ip')
