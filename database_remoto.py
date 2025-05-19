@@ -48,11 +48,11 @@ class BancoRemoto:
                 estado_led INTEGER DEFAULT 0,
                 distancia TEXT,
                 ip TEXT,
-                potenciometro TEXT,
-                pir TEXT,
-                relay TEXT,
+                luminosidade TEXT,
+                movimento TEXT,
+                som TEXT,
                 teclado TEXT,
-                touch TEXT,
+                toque TEXT,
                 temperatura TEXT,
                 umidade TEXT,
                 led TEXT
@@ -118,20 +118,15 @@ class BancoRemoto:
                     return False, str(e)
                 time.sleep(1)  # Espera antes de tentar novamente
         
-    def mudar_estado_led (self, ip, estado_ultrassonico):
+    def mudar_estado_led (self, ip, estado_led):
         
-        self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
+        self.__cursor.execute ("select ip, led from dispositivos where ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone ()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
-            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET led = %s WHERE ip = %s", (estado_led, ip,))
+            self.__cursor.execute("insert * from led where ip = %s", (ip,))
             self.__conexao.commit()
-            
-        #     if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
-        #         return True
-        # else:
-        #     return False
     
     def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
         
@@ -142,26 +137,16 @@ class BancoRemoto:
             self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
             self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
-            
-        #     if principal (ip_usuario [0], estado_ultrassonico, circuitos = 2):
-        #         return True
-        # else:
-        #     return False
         
     def mudar_estado_pir (self, ip, estado_pir):
         
-        self.__cursor.execute ("select ip, pir from dispositivos where ip = %s", (ip,))
+        self.__cursor.execute ("select ip, movimento from dispositivos where ip = %s", (ip,))
         ip_usuario = self.__cursor.fetchone ()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET pir = %s WHERE ip = %s", (estado_pir, ip,))
-            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET movimento = %s WHERE ip = %s", (estado_pir, ip,))
+            self.__cursor.execute("insert * from pir where ip = %s", (ip,))
             self.__conexao.commit()
-            
-        #     if principal (ip_usuario [0], estado_pir, circuitos = 3):
-        #         return True
-        # else:
-        #     return False
         
     def mudar_estado_lcd (self, ip, estado_lcd):
         
@@ -170,13 +155,37 @@ class BancoRemoto:
         
         if ip_usuario:
             self.__cursor.execute("UPDATE dispositivos SET teclado = %s WHERE ip = %s", (estado_lcd, ip,))
-            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
             self.__conexao.commit()
             
-        #     if principal (ip_usuario [0], estado_lcd, circuitos = 3):
-        #         return True
-        # else:
-        #     return False
+    def mudar_estado_fotoresistor (self, ip, estado_fotoresistor):
+        
+        self.__cursor.execute ("select ip, luminosidade from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET luminosidade = %s WHERE ip = %s", (estado_fotoresistor, ip,))
+            self.__cursor.execute("insert * from fotoresistor where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+    def mudar_estado_buzzer (self, ip, estado_buzzer):
+        
+        self.__cursor.execute ("select ip, som from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET som = %s WHERE ip = %s", (estado_buzzer, ip,))
+            self.__cursor.execute("insert * from buzzer where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+    def mudar_estado_touch (self, ip, estado_touch):
+        
+        self.__cursor.execute ("select ip, toque from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET toque = %s WHERE ip = %s", (estado_touch, ip,))
+            self.__cursor.execute("insert * from touch where ip = %s", (ip,))
+            self.__conexao.commit()
         
     def fechar(self):
         self.__cursor.close()
