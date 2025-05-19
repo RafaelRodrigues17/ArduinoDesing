@@ -117,7 +117,8 @@ class BancoRemoto:
                 if tentativa == MAX_TENTATIVAS:
                     return False, str(e)
                 time.sleep(1)  # Espera antes de tentar novamente
-        
+    
+    
     def mudar_estado_led (self, ip, estado_ultrassonico):
         
         self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))

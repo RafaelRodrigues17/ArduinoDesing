@@ -7,7 +7,7 @@ class BancoLocal:
         self.cursor = self.conexao.cursor()
         self.criar_tabela()
 
-    def criar_tabela(self):
+    def criar_tabela(self):        
         self.cursor.execute ("""create table if not exists ultrassonico (id integer primary key autoincrement, distancia integer, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists pir (id integer primary key autoincrement, nome text, hora text, data text)""")
         self.conexao.commit ()
@@ -15,3 +15,8 @@ class BancoLocal:
     def dados_ultrassonico (self):
         self.cursor.execute("SELECT distancia, nome, hora, data FROM ultrassonico ORDER BY id DESC LIMIT 10")
         return self.cursor.fetchall()
+    
+    
+    
+    
+    

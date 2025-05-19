@@ -1,12 +1,14 @@
 from flask import Flask, render_template, flash, session, request, redirect, url_for
 from database_remoto import BancoRemoto
 from database_local import BancoLocal
+from flask import Flask, jsonify
 
 # Inicializa a aplicação Flask e o banco de dados
 banco_remoto = BancoRemoto()
 banco_local = BancoLocal()
 app = Flask(__name__)
 app.secret_key = "chave_muito_segura"  # Chave necessária para sessões Flask
+
 
 # Rota para a página inicial
 @app.route('/')
@@ -163,5 +165,30 @@ def led():
     mensagem = request.args.get("mensagem")
     return render_template("led.html", mensagem=mensagem)
   
+@app.route('/sensor/status', methods=['GET'])
+def sensor_status():
+    try:
+
+        dispositivo_ip = "192.168.1.157"  
+        banco_remoto.verificar_conexao()
+        banco_remoto.__cursor.execute(
+            "SELECT touch FROM dispositivos WHERE ip = %s", (dispositivo_ip,)
+        )
+        status = banco_remoto.__cursor.fetchone()
+        
+        if status:
+            
+            return jsonify({"status": bool(int(status[0]))}), 200
+        else:
+            return jsonify({"status": False}), 404
+            
+    except Exception as e:
+        print(f"Erro ao buscar status do sensor: {e}")
+        return jsonify({"error": "Erro ao buscar status"}), 500
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)  # Executa o servidor Flask em modo debug

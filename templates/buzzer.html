@@ -3,69 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controle - Buzzer</title>
+  <title>Controle de Buzzer Musical</title>
   <link rel="stylesheet" href="static/styles.css">
   <style>
-    .container {
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: center;
-      padding: 20px;
+    .btn-tone {
+      width: 80px;
+      height: 80px;
+      margin: 5px;
+      font-size: 18px;
+      border-radius: 50%;
     }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+    .btn-control {
+      padding: 15px 30px;
+      font-size: 20px;
+      margin: 10px;
     }
-    .img-led {
-        width: 200px;
-        height: auto;
-        margin: 20px auto;
-        display: block;
+    .active-tone {
+      box-shadow: 0 0 15px #0d6efd;
+      transform: scale(1.05);
     }
-    #mensagem {
-      font-weight: bold;
-      margin-top: 20px;
+    #status-indicator {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 10px;
+    }
+    .on {
+      background-color: #0f0;
+      box-shadow: 0 0 10px #0f0;
+    }
+    .off {
+      background-color: #f00;
+      box-shadow: 0 0 10px #f00;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Controle do Buzzer</h1>
-    <img src="static/img/buzzer.png" class="img-led">
-    <form action="/acender_buzzer" method="POST">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 text-center">
+        <h1 class="mb-4">Controle de Buzzer Musical</h1>
+        
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="card-title">Estado Atual</h3>
+            <div class="d-flex justify-content-center align-items-center mb-3">
+              <span id="status-text">Desligado</span>
+              <div id="status-indicator" class="off"></div>
+            </div>
+            <div class="mb-3">
+              <span id="current-tone">Nenhum tom selecionado</span>
+            </div>
+            <div>
+              <button id="play-btn" class="btn btn-primary btn-control">
+                <i class="bi bi-play-fill"></i> Ligar
+              </button>
+              <button id="stop-btn" class="btn btn-danger btn-control">
+                <i class="bi bi-stop-fill"></i> Desligar
+              </button>
+            </div>
+          </div>
+        </div>
 
-      <label for="mensagem">Notas para adicionar:</label>
-      <input type="text" id="mensagem" name="mensagem" placeholder="Dó, Ré, Mi, Fá..." required>
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">Selecione o Tom</h3>
+            <div class="d-flex flex-wrap justify-content-center">
+              <button data-tone="262" class="btn btn-outline-primary btn-tone">Dó</button>
+              <button data-tone="294" class="btn btn-outline-primary btn-tone">Ré</button>
+              <button data-tone="330" class="btn btn-outline-primary btn-tone">Mi</button>
+              <button data-tone="349" class="btn btn-outline-primary btn-tone">Fá</button>
+              <button data-tone="392" class="btn btn-outline-primary btn-tone">Sol</button>
+              <button data-tone="440" class="btn btn-outline-primary btn-tone">Lá</button>
+              <button data-tone="494" class="btn btn-outline-primary btn-tone">Si</button>
+            </div>
+          </div>
+        </div>
 
-    <button type="submit" class="ligar">Confirmar</button>
-    <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
-    </form>
-         
-
-    <p id="mensagem"></p>
+        <div class="mt-4">
+          <div class="form-floating">
+            <select class="form-select" id="melody-select">
+              <option value="">Selecione uma melodia</option>
+              <option value="1">Alarme</option>
+              <option value="2">Sirene</option>
+              <option value="3">Música Simples</option>
+            </select>
+            <label for="melody-select">Melodias pré-definidas</label>
+          </div>
+          <button id="play-melody" class="btn btn-success mt-2">Tocar Melodia</button>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function ligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor, digite o IP.");
-        return;
+    const playBtn = document.getElementById('play-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const toneButtons = document.querySelectorAll('.btn-tone');
+    const statusText = document.getElementById('status-text');
+    const statusIndicator = document.getElementById('status-indicator');
+    const currentToneText = document.getElementById('current-tone');
+    const melodySelect = document.getElementById('melody-select');
+    const playMelodyBtn = document.getElementById('play-melody');
+
+    let currentTone = null;
+    let isPlaying = false;
+    let arduinoIP = '192.168.1.100'; // Substitua pelo IP do seu Arduino
+
+    // Função para atualizar a interface
+    function updateUI() {
+      if (isPlaying) {
+        statusText.textContent = 'Tocando';
+        statusIndicator.className = 'on';
+        playBtn.disabled = true;
+        stopBtn.disabled = false;
+      } else {
+        statusText.textContent = 'Desligado';
+        statusIndicator.className = 'off';
+        playBtn.disabled = false;
+        stopBtn.disabled = true;
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
+      
+      if (currentTone) {
+        currentToneText.textContent = `Tom atual: ${currentTone}Hz`;
+      } else {
+        currentToneText.textContent = 'Nenhum tom selecionado';
+      }
     }
 
-    function desligarLcd() {
-      const ip = document.getElementById('ip').value;
-      if (!ip) {
-        alert("Por favor digite um IP válido.");
+    // Enviar comando para o Arduino
+    async function sendCommand(endpoint) {
+      try {
+        const response = await fetch(`http://${arduinoIP}/${endpoint}`);
+        const result = await response.text();
+        console.log(result);
+        return true;
+      } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao comunicar com o Arduino');
+        return false;
+      }
+    }
+
+    // Event listeners
+    playBtn.addEventListener('click', async () => {
+      if (!currentTone) {
+        alert('Selecione um tom primeiro');
         return;
       }
-      // Aqui você pode fazer uma requisição para o backend usando fetch, se quiser
-      document.getElementById('mensagem').textContent = "O LCD está desligado!";
-    }
+      isPlaying = await sendCommand('play');
+      updateUI();
+    });
+
+    stopBtn.addEventListener('click', async () => {
+      isPlaying = !(await sendCommand('stop'));
+      updateUI();
+    });
+
+    toneButtons.forEach(button => {
+      button.addEventListener('click', async () => {
+        currentTone = button.dataset.tone;
+        toneButtons.forEach(btn => btn.classList.remove('active-tone'));
+        button.classList.add('active-tone');
+        
+        await sendCommand(`setTone?tone=${currentTone}`);
+        updateUI();
+      });
+    });
+
+    playMelodyBtn.addEventListener('click', async () => {
+      const melody = melodySelect.value;
+      if (!melody) {
+        alert('Selecione uma melodia');
+        return;
+      }
+      
+      // Envie o comando para tocar a melodia selecionada
+      const result = await sendCommand(`playMelody?type=${melody}`);
+      if (result) {
+        isPlaying = true;
+        updateUI();
+      }
+    });
+
+    // Inicializar UI
+    updateUI();
   </script>
 </body>
 </html>
