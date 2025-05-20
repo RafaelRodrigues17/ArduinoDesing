@@ -72,8 +72,11 @@ h1 {
   color: white; /* Cor branca */
   text-shadow: 1px 1px 2px black; /* Sombra para melhor leitura */
 }
-/* Botão azul para ligar o LED */
+/* Botão azul para voltar para a página "Home" */
 button.ligar {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
   margin-top: 20px;
   background-color: #007bff; /* Azul */
   color: white;
@@ -82,6 +85,10 @@ button.ligar {
   cursor: pointer; 
   font-weight: bold;
   transition: background 0.3s;
+}
+
+div.btn-voltar {
+  width: 100px;
 }
 
 button.ligar:hover {
@@ -169,11 +176,10 @@ input[type="text"], input[type="password"] {
 
 /* Botão */
 .botoes button {
-  width: 100%;
   padding: 10px;
   margin-top: 20px;
   border: none;
-  background: linear-gradient(90deg, #00ffff, #007777);
+  background: linear-gradient(90deg, #00ff2a, #00ec7241);
   color: black;
   font-weight: bold;
   border-radius: 6px;
@@ -182,7 +188,7 @@ input[type="text"], input[type="password"] {
 }
 
 .botoes button:hover {
-  background: linear-gradient(90deg, #00ffee, #005555);
+  background: linear-gradient(90deg, #00ff4c91, #01e178);
   transform: scale(1.03);
 }
 
@@ -276,4 +282,12 @@ a.atualizar svg {
 
 button#voltar {
   margin-top: 70px;
+}
+
+div.status-desligado {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
