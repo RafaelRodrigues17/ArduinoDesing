@@ -132,24 +132,9 @@
   </div>
 
   <script>
-
-    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
-
-    function validarIP(acao) {
-      const ip = document.getElementById('ip').value;
-      const erroElement = document.getElementById('erro');
-      if (!IP_HOSTS.includes(ip)) {
-        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
-        return false;
-      }
-      else {
-        erroElement.textContent = "";
-        document.getElementById('valor_pir').value = (acao === 'ligar');
-        return true;
-      }
-      
-      document.getElementById('mensagem').textContent = "O PIR está ligado!";
-
+    // Função que define o estado do LED antes de enviar o formulário
+    function definirEstado(acao) {
+      document.getElementById('estado').value = (acao === 'ligar') ? 1 : 0;
     }
   </script>
 </body>

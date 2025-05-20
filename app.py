@@ -130,7 +130,7 @@ def alterar_touch ():
     estado_touch = int (request.form.get ('estado_touch'))
 
     if banco_remoto.mudar_estado_touch(ip, estado_touch):
-        registros_touch = banco_local.dados_buzzer()
+        registros_touch = banco_local.dados_touch()
         return render_template('touch.html', registros_touch = registros_touch)
     else:
         flash("IP não encontrado ou erro ao enviar comando")

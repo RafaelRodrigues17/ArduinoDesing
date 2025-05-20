@@ -45,7 +45,7 @@ class BancoRemoto:
                 nome TEXT,
                 email TEXT,
                 senha TEXT,
-                estado_led INTEGER DEFAULT 0,
+                estado INTEGER DEFAULT 0,
                 distancia TEXT,
                 ip TEXT,
                 luminosidade TEXT,
@@ -82,7 +82,8 @@ class BancoRemoto:
             'desligar': b"desligar\n",
             'distancia': b"distancia\n",
             'lcd': b"lcd_on\n",
-            'temperatura': b"temperatura\n"
+            'temperatura': b"temperatura\n",
+            'movimento' : b'movimento\n'
         }
         
         # Verifica se o comando é válido
@@ -105,7 +106,7 @@ class BancoRemoto:
                 if comando in ['ligar', 'desligar']:
                     estado = 1 if comando == 'ligar' else 0
                     self.__cursor.execute(
-                        "UPDATE dispositivos SET estado_led = %s WHERE ip = %s",
+                        "UPDATE dispositivos SET estado = %s WHERE ip = %s",
                         (estado, ip)
                     )
                     self.__conexao.commit()
