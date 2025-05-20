@@ -11,7 +11,7 @@ class BancoLocal:
         self.cursor.execute ("""create table if not exists ultrassonico (id integer primary key autoincrement, distancia text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists pir (id integer primary key autoincrement, movimento text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists fotoresistor (id integer primary key autoincrement, luminosidade integer, nome text)""")
-        self.cursor.execute ("""create table if not exists buzzer (id integer primary key autoincrement, nota text, status text, nome text, hora text, data text)""")
+        self.cursor.execute ("""create table if not exists buzzer (id integer primary key autoincrement, som text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists touch (id integer primary key autoincrement, status text, nome, text, hora text, data text)""")
         self.conexao.commit ()
         
