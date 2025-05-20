@@ -130,7 +130,7 @@
 
     <div class="switch-container">
       <label class="switch">
-        <input type="checkbox" id="ultrassonico-switch" onclick="definirEstado(this.checked)">
+        <input type="checkbox" id="ultrassonico-switch" actio="/alterar_ultrassonico" onclick="definirEstado(this.checked)">
         <span class="slider"></span>
       </label>
       
@@ -141,8 +141,9 @@
   </div>
 
   <script>
+    // Função que define o estado do LED antes de enviar o formulário
     function definirEstado(acao) {
-      document.getElementById('distancia').value = (acao === 'ligar') ? 1 : 0;
+      document.getElementById('estado').value = (acao === 'ligar') ? 1 : 0;
     }
   </script>
 </body>

@@ -28,9 +28,9 @@ class BancoLocal:
         return self.cursor.fetchall ()
     
     def dados_buzzer (self):
-        self.cursor.execute ("SELECT som, som, nome, hora, data  FROM buzzer ORDER BY id DESC LIMIT 10")
+        self.cursor.execute ("SELECT nota, status, nome, hora, data  FROM buzzer ORDER BY id DESC LIMIT 10")
         return self.cursor.fetchall ()
     
-    def dados_btouch (self):
+    def dados_touch (self):
         self.cursor.execute ("SELECT status, nome, hora, data  FROM buzzer ORDER BY id DESC LIMIT 10")
         return self.cursor.fetchall ()
