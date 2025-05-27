@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle - Sensor DHT</title>
+  <link rel="stylesheet" href="static/styles.css">
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .img-led {
+        width: 200px;
+        height: auto;
+        margin: 20px auto;
+        display: block;
+    }
+    #mensagem {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Controle do Sensor DHT</h1>
+    <img src="static/img/dht.png" class="img-led">
+    <form action="/alterar_dht" method="POST">
+
+      <label for="mensagem">Mensagem do DHT:</label>
+      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do DHT" required>
+
+    <button type="submit" class="ligar">Confirmar</button>
+    <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
+    </form>
+         
+
+    <p id="mensagem"></p>
+  </div>
+
+  <script>
+
+    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
+
+    function validarIP(acao) {
+      const ip = document.getElementById('ip').value;
+      const erroElement = document.getElementById('erro');
+      if (!IP_HOSTS.includes(ip)) {
+        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
+        return false;
+      }
+      else {
+        erroElement.textContent = "";
+        document.getElementById('valor_dht').value = (acao === 'ligar');
+        return true;
+      }
+      
+      document.getElementById('mensagem').textContent = "O DHT está ligado!";
+
+    }
+  </script>
+</body>
+</html>

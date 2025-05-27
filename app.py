@@ -49,6 +49,9 @@ def touch():
 def rfid():
     return render_template('rfid.html')
 
+@app.route('/dht')
+def dht():
+    return render_template('dht.html')
 
 # Rota para controle do LED (mantida para compatibilidade)
 @app.route('/alterar_led', methods=['POST'])
