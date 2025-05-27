@@ -138,6 +138,18 @@ def alterar_touch ():
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('touch'))
+    
+@app.route ('/alterar_dht', methods = ['POST'])
+def alterar_dht ():
+    ip = request.form.get ('ip')
+    estado_dht = int (request.form.get ('estado_dht'))
+
+    if banco_remoto.mudar_estado_fht(ip, estado_dht):
+        registros_dht = banco_local.dados_dht()
+        return render_template('dht.html', registros_dht = registros_dht)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('touch'))
 
 # Nova rota para controle geral dos dispositivos
 @app.route('/controle', methods=['GET', 'POST'])

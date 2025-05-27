@@ -55,7 +55,8 @@ class BancoRemoto:
                 toque TEXT,
                 temperatura TEXT,
                 umidade TEXT,
-                led TEXT
+                led TEXT,
+                dht TEXT
             )
         """)
         self.__conexao.commit()
@@ -186,6 +187,16 @@ class BancoRemoto:
         if ip_usuario:
             self.__cursor.execute("UPDATE dispositivos SET toque = %s WHERE ip = %s", (estado_touch, ip,))
             self.__cursor.execute("insert * from touch where ip = %s", (ip,))
+            self.__conexao.commit()
+            
+    def mudar_estado_dht (self, ip, estado_dht):
+        
+        self.__cursor.execute ("select ip, dht from dispositivos where ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone ()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET dht = %s WHERE ip = %s", (estado_dht, ip,))
+            self.__cursor.execute("insert * from dht where ip = %s", (ip,))
             self.__conexao.commit()
         
     def fechar(self):
