@@ -102,14 +102,7 @@ class BancoRemoto:
                 resposta = s.recv(128).decode().strip()
                 s.close()
                 
-                # Atualiza o banco de dados conforme o comando
-                if comando in ['ligar', 'desligar']:
-                    estado = 1 if comando == 'ligar' else 0
-                    self.__cursor.execute(
-                        "UPDATE dispositivos SET estado = %s WHERE ip = %s",
-                        (estado, ip)
-                    )
-                    self.__conexao.commit()
+                # NÃO atualiza o campo 'estado' que não existe
                 
                 return True, resposta
                 
@@ -118,75 +111,124 @@ class BancoRemoto:
                 if tentativa == MAX_TENTATIVAS:
                     return False, str(e)
                 time.sleep(1)  # Espera antes de tentar novamente
-        
-    def mudar_estado_led (self, ip, estado_led):
-        
-        self.__cursor.execute ("select ip, led from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
-        
-        if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET led = %s WHERE ip = %s", (estado_led, ip,))
-            self.__cursor.execute("insert * from led where ip = %s", (ip,))
-            self.__conexao.commit()
     
-    def mudar_estado_ultrassonico (self, ip, estado_ultrassonico):
-        
-        self.__cursor.execute ("select ip, distancia from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
-        
-        if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip,))
-            self.__cursor.execute("insert * from ultrassonico where ip = %s", (ip,))
-            self.__conexao.commit()
-        
-    def mudar_estado_pir (self, ip, estado_pir):
-        
-        self.__cursor.execute ("select ip, movimento from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
+    def mudar_estado_led(self, ip, estado_led):
+        self.__cursor.execute("SELECT ip, led FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET movimento = %s WHERE ip = %s", (estado_pir, ip,))
-            self.__cursor.execute("insert * from pir where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET led = %s WHERE ip = %s", (estado_led, ip))
+            # Removido comando INSERT inválido
             self.__conexao.commit()
+            return True
+        return False
+    
+    def enviar_mensagem_lcd(self, dispositivo, mensagem):
+        """Método para enviar mensagens ao LCD"""
+        self.verificar_conexao()
+        PORT = 5000
+        MAX_TENTATIVAS = 3
         
-    def mudar_estado_lcd (self, ip, estado_lcd):
+        if dispositivo not in self.ARDUINO_IPS:
+            return False, "Dispositivo não encontrado"
         
-        self.__cursor.execute ("select ip, teclado from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
+        ip = self.ARDUINO_IPS[dispositivo]
+        
+        # Formato especial para mensagens LCD
+        msg = f"LCD:{mensagem}\n".encode()  # Formato "LCD:mensagem"
+        
+        for tentativa in range(1, MAX_TENTATIVAS + 1):
+            try:
+                s = socket.create_connection((ip, PORT), timeout=2)
+                s.sendall(msg)
+                resposta = s.recv(256).decode().strip()
+                s.close()
+                return True, resposta
+            except (socket.timeout, OSError) as e:
+                print(f"Erro na tentativa {tentativa}: {e}")
+                if tentativa == MAX_TENTATIVAS:
+                    return False, str(e)
+                time.sleep(1)
+
+    def mudar_mensagem_lcd(self, ip, mensagem):
+        """Atualiza a mensagem no banco de dados"""
+        self.verificar_conexao()
+        try:
+            # Usando a coluna 'teclado' para armazenar a mensagem LCD
+            self.__cursor.execute(
+                "UPDATE dispositivos SET teclado = %s WHERE ip = %s",
+                (mensagem, ip)
+            )
+            self.__conexao.commit()
+            return True
+        except mysql.connector.Error as err:
+            print(f"Erro ao atualizar mensagem LCD: {err}")
+            return False
+
+    def mudar_estado_ultrassonico(self, ip, estado_ultrassonico):
+        self.__cursor.execute("SELECT ip, distancia FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET teclado = %s WHERE ip = %s", (estado_lcd, ip,))
+            self.__cursor.execute("UPDATE dispositivos SET distancia = %s WHERE ip = %s", (estado_ultrassonico, ip))
+            # Removido comando INSERT inválido
             self.__conexao.commit()
+            return True
+        return False
+    
+    def mudar_estado_pir(self, ip, estado_pir):
+        self.__cursor.execute("SELECT ip, movimento FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET movimento = %s WHERE ip = %s", (estado_pir, ip))
+            # Removido comando INSERT inválido
+            self.__conexao.commit()
+            return True
+        return False
+    
+    def mudar_estado_lcd(self, ip, estado_lcd):
+        self.__cursor.execute("SELECT ip, teclado FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
+        
+        if ip_usuario:
+            self.__cursor.execute("UPDATE dispositivos SET teclado = %s WHERE ip = %s", (estado_lcd, ip))
+            self.__conexao.commit()
+            return True
+        return False
             
-    def mudar_estado_fotoresistor (self, ip, estado_fotoresistor):
-        
-        self.__cursor.execute ("select ip, luminosidade from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
+    def mudar_estado_fotoresistor(self, ip, estado_fotoresistor):
+        self.__cursor.execute("SELECT ip, luminosidade FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET luminosidade = %s WHERE ip = %s", (estado_fotoresistor, ip,))
-            self.__cursor.execute("insert * from fotoresistor where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET luminosidade = %s WHERE ip = %s", (estado_fotoresistor, ip))
+            # Removido comando INSERT inválido
             self.__conexao.commit()
+            return True
+        return False
             
-    def mudar_estado_buzzer (self, ip, estado_buzzer):
-        
-        self.__cursor.execute ("select ip, som from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
+    def mudar_estado_buzzer(self, ip, estado_buzzer):
+        self.__cursor.execute("SELECT ip, som FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET som = %s WHERE ip = %s", (estado_buzzer, ip,))
-            self.__cursor.execute("insert * from buzzer where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET som = %s WHERE ip = %s", (estado_buzzer, ip))
+            # Removido comando INSERT inválido
             self.__conexao.commit()
+            return True
+        return False
             
-    def mudar_estado_touch (self, ip, estado_touch):
-        
-        self.__cursor.execute ("select ip, toque from dispositivos where ip = %s", (ip,))
-        ip_usuario = self.__cursor.fetchone ()
+    def mudar_estado_touch(self, ip, estado_touch):
+        self.__cursor.execute("SELECT ip, toque FROM dispositivos WHERE ip = %s", (ip,))
+        ip_usuario = self.__cursor.fetchone()
         
         if ip_usuario:
-            self.__cursor.execute("UPDATE dispositivos SET toque = %s WHERE ip = %s", (estado_touch, ip,))
-            self.__cursor.execute("insert * from touch where ip = %s", (ip,))
+            self.__cursor.execute("UPDATE dispositivos SET toque = %s WHERE ip = %s", (estado_touch, ip))
+            # Removido comando INSERT inválido
             self.__conexao.commit()
+            return True
+        return False
         
     def fechar(self):
         self.__cursor.close()

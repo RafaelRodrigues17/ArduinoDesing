@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Controle - LED</title>
-  <link rel="stylesheet" href="static/styles.css">
+  <link rel="stylesheet" href="static/styles.css" />
   <style>
     .container {
       max-width: 400px;
@@ -33,9 +33,9 @@
 <body>
   <div class="container">
     <h1>Controle do LED</h1>
-    <img src="static/img/led.png" class="img-led">
+    <img src="static/img/led.png" class="img-led" />
     <form id="form_led" action="/alterar_led" method="POST">
-      <input type="hidden" id="estado_led" name="estado_led" value="1">
+      <input type="hidden" id="estado_led" name="estado_led" value="1" />
       <button type="submit" class="ligar" onclick="return definirEstado('ligar')">Ligar LED</button>
       <button type="submit" class="desligar" onclick="return definirEstado('desligar')">Desligar LED</button> 
 
@@ -48,9 +48,14 @@
   </div>  
   
   <script>
-    // Função que define o estado do LED antes de enviar o formulário
+    
     function definirEstado(acao) {
-      document.getElementById('estado').value = (acao === 'ligar') ? 1 : 0;
+      if (acao === 'ligar') {
+        document.getElementById('estado_led').value = 1;
+      } else {
+        document.getElementById('estado_led').value = 0;
+      }
+      return true; 
     }
   </script>
 </body>

@@ -33,39 +33,29 @@
   <div class="container">
     <h1>Controle do LCD</h1>
     <img src="static/img/lcd.png" class="img-led">
+    
+    <!-- Formulário corrigido com campo IP -->
     <form action="/alterar_lcd" method="POST">
-
-      <label for="mensagem">Mensagem do LCD:</label>
-      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem do LCD" required>
-
-    <button type="submit" class="ligar">Confirmar</button>
-    <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
-    </form>
-         
-
-    <p id="mensagem"></p>
-  </div>
-
-  <script>
-
-    const IP_HOSTS = ["10.0.0.18", "10.0.0.178", "192.168.1.105"];
-
-    function validarIP(acao) {
-      const ip = document.getElementById('ip').value;
-      const erroElement = document.getElementById('erro');
-      if (!IP_HOSTS.includes(ip)) {
-        erroElement.textContent = "Erro: O IP fornecido não é válido. Por favor, insira um IP válido.";
-        return false;
-      }
-      else {
-        erroElement.textContent = "";
-        document.getElementById('valor_lcd').value = (acao === 'ligar');
-        return true;
-      }
+      <input type="hidden" name="ip" value="192.168.1.178"> <!-- Altere para o IP correto -->
       
-      document.getElementById('mensagem').textContent = "O LCD está ligado!";
-
-    }
-  </script>
+      <label for="mensagem">Mensagem do LCD:</label>
+      <input type="text" id="mensagem" name="mensagem" placeholder="Digite a mensagem" required maxlength="16">
+      <!-- Adicionei maxlength porque muitos LCDs têm limite de caracteres -->
+      
+      <button type="submit" class="ligar">Enviar Mensagem</button>
+      <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
+    </form>
+    
+    <!-- Exibe mensagens flash do Flask -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div id="status-mensagem">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </div>
 </body>
 </html>
