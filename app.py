@@ -49,6 +49,41 @@ def alterar_lcd():
             # Atualiza no banco
             banco_remoto.mudar_mensagem_lcd(ip, mensagem)
             return redirect(url_for('lcd', mensagem=mensagem))
+
+@app.route('/fotoresistor')
+def fotoresistor():
+    return render_template('fotoresistor.html')
+
+@app.route('/buzzer')
+def buzzer():
+    return render_template('buzzer.html')
+
+@app.route('/pir')
+def pir():
+    return render_template('pir.html')
+
+@app.route('/touch')
+def touch():
+    return render_template('touch.html')
+
+@app.route('/rfid')
+def rfid():
+    return render_template('rfid.html')
+
+@app.route('/dht')
+def dht():
+    return render_template('dht.html')
+
+# Rota para controle do LED (mantida para compatibilidade)
+@app.route('/alterar_led', methods=['POST'])
+def alterar_led():
+    ip = "10.0.0.178"  # IP fixo do dispositivo
+    estado_led = int(request.form.get('estado_led'))
+
+    if banco_remoto.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
+        flash("LED controlado com sucesso!")
+        if banco_remoto.mudar_estado_led(ip, estado_led):
+            return redirect(url_for('led'))
         else:
             flash(f"Erro ao enviar mensagem: {resposta}")
             return redirect(url_for('lcd'))
@@ -78,6 +113,61 @@ def alterar_componente(componente):
     flash("IP não encontrado ou erro ao enviar comando")
     return redirect(url_for(componente))
 
+    if banco_remoto.mudar_estado_lcd(ip, estado_lcd):
+        return redirect(url_for('lcd'))
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('lcd'))
+    
+@app.route ('/alterar_fotoresistor', methods = ['POST'])
+def alterar_fotoresistor ():
+    ip = request.form.get ('ip')
+    estado_fotoresistor = int (request.form.get ('estado_fotoresistor'))
+
+    if banco_remoto.mudar_estado_fotoresistor(ip, estado_fotoresistor):
+        registros_fotoresistor = banco_local.dados_fotoresistor()
+        return render_template('fotoresistor.html', registros_fotoresistor = registros_fotoresistor)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('fotoresistor'))
+    
+@app.route ('/alterar_buzzer', methods = ['POST'])
+def alterar_buzzer ():
+    ip = request.form.get ('ip')
+    estado_buzzer = int (request.form.get ('estado_buzzer'))
+
+    if banco_remoto.mudar_estado_buzzer(ip, estado_buzzer):
+        registros_buzzer = banco_local.dados_buzzer()
+        return render_template('buzzer.html', registros_buzzer = registros_buzzer)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('buzzer'))
+    
+@app.route ('/alterar_touch', methods = ['POST'])
+def alterar_touch ():
+    ip = request.form.get ('ip')
+    estado_touch = int (request.form.get ('estado_touch'))
+
+    if banco_remoto.mudar_estado_touch(ip, estado_touch):
+        registros_touch = banco_local.dados_touch()
+        return render_template('touch.html', registros_touch = registros_touch)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('touch'))
+    
+@app.route ('/alterar_dht', methods = ['POST'])
+def alterar_dht ():
+    ip = request.form.get ('ip')
+    estado_dht = int (request.form.get ('estado_dht'))
+
+    if banco_remoto.mudar_estado_fht(ip, estado_dht):
+        registros_dht = banco_local.dados_dht()
+        return render_template('dht.html', registros_dht = registros_dht)
+    else:
+        flash("IP não encontrado ou erro ao enviar comando")
+        return redirect(url_for('touch'))
+
+# Nova rota para controle geral dos dispositivos
 @app.route('/controle', methods=['GET', 'POST'])
 def controle():
     if request.method == 'POST':
