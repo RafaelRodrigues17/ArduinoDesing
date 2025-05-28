@@ -32,23 +32,6 @@ def componentes(componente):
         return render_template(f'{componente}.html')
     return redirect(url_for('index'))
 
-@app.route('/alterar_lcd', methods=['POST'])
-def alterar_lcd():
-    try:
-        ip = request.form.get('ip')  # Pega o IP do formulário
-        mensagem = request.form.get('mensagem')  # Pega a mensagem
-        
-        if not ip or not mensagem:
-            flash("IP ou mensagem não fornecidos!")
-            return redirect(url_for('lcd'))
-        
-        # Envia o comando para o Arduino
-        sucesso, resposta = banco_remoto.enviar_mensagem_lcd('Davi', mensagem)
-        
-        if sucesso:
-            # Atualiza no banco
-            banco_remoto.mudar_mensagem_lcd(ip, mensagem)
-            return redirect(url_for('lcd', mensagem=mensagem))
 
 @app.route('/fotoresistor')
 def fotoresistor():
@@ -77,20 +60,17 @@ def dht():
 # Rota para controle do LED (mantida para compatibilidade)
 @app.route('/alterar_led', methods=['POST'])
 def alterar_led():
-    ip = "10.0.0.178"  # IP fixo do dispositivo
+    ip = "192.168.1.105"  # IP fixo do dispositivo
     estado_led = int(request.form.get('estado_led'))
 
-    if banco_remoto.enviar_comando('Davi', 'ligar' if estado_led == 1 else 'desligar')[0]:
+    if banco_remoto.enviar_comando('Kauan', 'ligar' if estado_led == 1 else 'desligar')[0]:
         flash("LED controlado com sucesso!")
         if banco_remoto.mudar_estado_led(ip, estado_led):
             return redirect(url_for('led'))
         else:
-            flash(f"Erro ao enviar mensagem: {resposta}")
+            flash(f"Erro ao enviar mensagem: ")
             return redirect(url_for('lcd'))
             
-    except Exception as e:
-        flash(f"Erro inesperado: {str(e)}")
-        return redirect(url_for('lcd'))
 
 @app.route('/alterar_<componente>', methods=['POST'])
 def alterar_componente(componente):
@@ -142,7 +122,21 @@ def alterar_buzzer ():
     else:
         flash("IP não encontrado ou erro ao enviar comando")
         return redirect(url_for('buzzer'))
-    
+
+@app.route ('/alterar_ultrassonico', methods = ['POST'])
+def alterar_ultrassonico ():
+    ip = "192.168.1.178"  # IP fixo do dispositivo
+    estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
+
+    if banco_remoto.mudar_estado_ultrassonico("Davi", "ligar" if estado_ultrassonico == 1 else 'desligar'):
+        flash("ultrassonico controlado com sucesso!")
+        if banco_remoto.mudar_estado_ultrassonico(ip, estado_ultrassonico):
+            print(estado_ultrassonico)
+            return redirect(url_for('ultrassonico'))
+        else:
+            flash(f"Erro ao enviar mensagem: ")
+            return redirect(url_for('lcd'))
+
 @app.route ('/alterar_touch', methods = ['POST'])
 def alterar_touch ():
     ip = request.form.get ('ip')
@@ -160,7 +154,7 @@ def alterar_dht ():
     ip = request.form.get ('ip')
     estado_dht = int (request.form.get ('estado_dht'))
 
-    if banco_remoto.mudar_estado_fht(ip, estado_dht):
+    if banco_remoto.mudar_estado_dht(ip, estado_dht):
         registros_dht = banco_local.dados_dht()
         return render_template('dht.html', registros_dht = registros_dht)
     else:
@@ -254,3 +248,6 @@ def sensor_status():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# print ("Te amamos Luca❤")
+# print ("Me da nota ")

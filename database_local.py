@@ -13,7 +13,7 @@ class BancoLocal:
         self.cursor.execute ("""create table if not exists fotoresistor (id integer primary key autoincrement, luminosidade integer, nome text)""")
         self.cursor.execute ("""create table if not exists buzzer (id integer primary key autoincrement, som text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists touch (id integer primary key autoincrement, status text, nome text, hora text, data text)""")
-        self.cursor.execute ("""create table if not exists dht (id integer primary key autoincrement, status, nome text, hora text, data text)""")
+        self.cursor.execute ("""create table if not exists dht (id integer primary key autoincrement, temperatura text, umidade text, nome text, hora text, data text)""")
         self.conexao.commit ()
         
     def dados_ultrassonico (self):
@@ -37,5 +37,5 @@ class BancoLocal:
         return self.cursor.fetchall ()
     
     def dados_dht (self):
-        self.cursor.execute ("SELECT status, nome, hora, data  FROM dht ORDER BY id DESC LIMIT 10")
+        self.cursor.execute ("SELECT temperatura, umidade nome, hora, data  FROM dht ORDER BY id DESC LIMIT 10")
         return self.cursor.fetchall ()
