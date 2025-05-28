@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Controle - Sensor Ultrassônico</title>
-  <link rel="stylesheet" href="static/styles.css">
+  <link rel="stylesheet" href="static/styles.css" />
   <style>
     .container {
       max-width: 500px;
@@ -18,94 +18,104 @@
       margin: 10px 0;
     }
     .img-led {
-        width: 200px;
-        height: auto;
-        margin: 20px auto;
-        display: block;
+      width: 200px;
+      height: auto;
+      margin: 20px auto;
+      display: block;
     }
     .tabela-container {
-        background-color: #1eff0046;
-        padding: 20px;
-        border-radius: 20px;
-        margin-top: 30px;
-        text-align: left;
+      background-color: #1eff0046;
+      padding: 20px;
+      border-radius: 20px;
+      margin-top: 30px;
+      text-align: left;
     }
     .tabela-titulo {
-        font-size: 1.8em;
-        margin-bottom: 15px;
-        color: #333;
-        font-weight: bold;
-        text-align: center;
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #333;
+      font-weight: bold;
+      text-align: center;
     }
     table {
-        width: 100%;
-        border-collapse: collapse;
+      width: 100%;
+      border-collapse: collapse;
     }
     th, td {
-        padding: 15px;
-        text-align: center;
-        border-bottom: 1px solid #ddd;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
     }
     th {
-        background-color: transparent;
-        font-weight: bold;
+      background-color: transparent;
+      font-weight: bold;
     }
     .switch-container {
-        margin: 20px 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .switch {
-        position: relative;
-        width: 60px;
-        height: 30px;
-        margin-bottom: 10px;
+      position: relative;
+      width: 60px;
+      height: 30px;
+      margin-bottom: 10px;
     }
     .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+      opacity: 0;
+      width: 0;
+      height: 0;
     }
     .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        border-radius: 30px;
-        transition: 0.4s;
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 30px;
+      transition: 0.4s;
     }
     .slider:before {
-        position: absolute;
-        content: "";
-        height: 24px;
-        width: 24px;
-        left: 3px;
-        bottom: 3px;
-        background-color: white;
-        border-radius: 50%;
-        transition: 0.4s;
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.4s;
     }
     input:checked + .slider {
-        background-color: #4caf50;
+      background-color: #4caf50;
     }
     input:checked + .slider:before {
-        transform: translateX(30px);
+      transform: translateX(30px);
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Controle do Sensor Ultrassônico</h1>
-    <img src="static/img/ultrassonico.png" class="img-led">
-    <form action="/alterar_ultrassonico" method="POST">
+    <img src="static/img/ultrassonico.png" class="img-led" />
 
-      <input type="hidden" id="estado_ultrassonico" name="estado_ultrassonico" value="1">
+    <form id="form_ultrassonico" action="/alterar_ultrassonico" method="POST">
+      <input type="hidden" id="estado_ultrassonico" name="estado_ultrassonico" value="1" />
+
+      <div class="switch-container">
+        <label class="switch">
+          <input type="checkbox" id="ultrassonico-switch" onclick="definirEstado(this)">
+          <span class="slider"></span>
+        </label>
+        <span id="estado-label">Ligado</span>
+      </div>
     </form>
+
     <div class="tabela-container">
+      <div class="tabela-titulo">Registros</div>
       <table>
         <thead>
           <tr>
@@ -118,7 +128,7 @@
         <tbody>
           {% for distancia, nome, hora, data in registros_ultrassonico %}
           <tr>
-            <td>{{ distancia }} cm </td>
+            <td>{{ distancia }} cm</td>
             <td>{{ nome }}</td>
             <td>{{ hora }}</td>
             <td>{{ data }}</td>
@@ -128,22 +138,15 @@
       </table>
     </div>
 
-    <div class="switch-container">
-      <label class="switch">
-        <input type="checkbox" id="ultrassonico-switch" actio="/alterar_ultrassonico" onclick="definirEstado(this.checked)">
-        <span class="slider"></span>
-      </label>
-      
-      <span id="estado-label">Desligado</span>
-
-    </div>
     <button type="button" class="ligar" onclick="window.location.href='/home'">Voltar</button>
   </div>
 
   <script>
-    // Função que define o estado do LED antes de enviar o formulário
-    function definirEstado(acao) {
-      document.getElementById('estado').value = (acao === 'ligar') ? 1 : 0;
+    function definirEstado(checkbox) {
+      const valor = checkbox.checked ? 1 : 0;
+      document.getElementById('estado_ultrassonico').value = valor;
+      document.getElementById('estado-label').textContent = checkbox.checked ? "Ligado" : "Desligado";
+      document.getElementById('form_ultrassonico').submit(); // Envia o formulário automaticamente
     }
   </script>
 </body>
