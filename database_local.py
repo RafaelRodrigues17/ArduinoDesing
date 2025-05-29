@@ -8,6 +8,7 @@ class BancoLocal:
         self.criar_tabela ()
 
     def criar_tabela(self):
+        self.cursor.execute ("""create table if not exists led (id integer primary key autoincrement, status text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists ultrassonico (id integer primary key autoincrement, distancia text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists pir (id integer primary key autoincrement, movimento text, nome text, hora text, data text)""")
         self.cursor.execute ("""create table if not exists fotoresistor (id integer primary key autoincrement, luminosidade integer, nome text)""")
@@ -16,6 +17,14 @@ class BancoLocal:
         self.cursor.execute ("""create table if not exists dht (id integer primary key autoincrement, temperatura text, umidade text, nome text, hora text, data text)""")
         self.conexao.commit ()
         
+    def dados_led(self, status, nome, hora, data):
+        self.cursor.execute('''
+            INSERT INTO led (status, nome, hora, data)
+            VALUES (?, ?, ?, ?)
+        ''', (status, nome, hora, data))
+        self.conexao.commit()
+        return self.cursor.lastrowid
+    
     def dados_ultrassonico (self):
         self.cursor.execute("SELECT distancia, nome, hora, data FROM ultrassonico ORDER BY id DESC LIMIT 10")
         return self.cursor.fetchall ()
