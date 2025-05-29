@@ -2,6 +2,7 @@ import mysql.connector
 from config import MYSQL_CONFIG
 import socket
 import time
+from database_local import BancoLocal
 
 class BancoRemoto:
     # Dicionário com os IPs dos dispositivos e seus nomes
@@ -119,7 +120,16 @@ class BancoRemoto:
         
         if ip_usuario:
             self.__cursor.execute("UPDATE dispositivos SET led = %s WHERE ip = %s", (estado_led, ip))
-            # Removido comando INSERT inválido
+            self.__cursor.execute("SELECT * FROM dispositivos WHERE ip = %s", (ip,))
+
+            nome = "led"
+            data = "10/10"  # idealmente, você usaria data atual aqui
+            hora = "1238"   # idem para hora
+
+            resultado = BancoLocal.dados_led(estado_led, nome, hora, data)
+            if resultado:
+                print("Inserção no log de LED realizada com sucesso. ID:", resultado)
+
             self.__conexao.commit()
             return True
         return False
@@ -136,7 +146,7 @@ class BancoRemoto:
         ip = self.ARDUINO_IPS[dispositivo]
         
         # Formato especial para mensagens LCD
-        msg = f"LCD:{mensagem}\n".encode()  # Formato "LCD:mensagem"
+        msg = f"{mensagem}\n".encode()  # Formato "LCD:mensagem"
         
         for tentativa in range(1, MAX_TENTATIVAS + 1):
             try:

@@ -128,7 +128,7 @@ def alterar_ultrassonico ():
     ip = "192.168.1.178"  # IP fixo do dispositivo
     estado_ultrassonico = int (request.form.get ('estado_ultrassonico'))
 
-    if banco_remoto.mudar_estado_ultrassonico("Davi", "ligar" if estado_ultrassonico == 1 else 'desligar'):
+    if banco_remoto.enviar_comando("Davi", "ligar" if estado_ultrassonico == 1 else 'desligar'):
         flash("ultrassonico controlado com sucesso!")
         if banco_remoto.mudar_estado_ultrassonico(ip, estado_ultrassonico):
             print(estado_ultrassonico)
@@ -199,6 +199,11 @@ def login():
 def led():
     mensagem = request.args.get("mensagem")
     return render_template("led.html", mensagem=mensagem)
+
+@app.route("/ultrassonico")
+def ultrassonico():
+    mensagem = request.args.get("mensagem")
+    return render_template("ultrassonico.html", mensagem=mensagem)
 
 @app.route('/alterar_lcd', methods=['POST'])
 def alterar_lcd():
